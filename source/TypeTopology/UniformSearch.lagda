@@ -11,15 +11,17 @@ uniformly continuous predicates. In this module, we generalise this to types
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe --auto-inline #-}
+{-# OPTIONS --without-K --exact-split --auto-inline --rewriting #-}
 
-open import MLTT.Spartan
+open import Agda.Builtin.Equality.Rewrite
+open import MLTT.Spartan hiding (_+_)
 open import UF.Base
 open import TypeTopology.TotallySeparated
 open import TypeTopology.CompactTypes
 open import UF.FunExt
+open import Naturals.Addition
 
-module TypeTopology.UniformSearch (X : 𝓤  ̇) (fe : funext 𝓤₀ 𝓤) (κ : compact∙ X) where
+module TypeTopology.UniformSearch (X : ℕ → 𝓤  ̇) (fe : funext 𝓤₀ 𝓤) (fe′ : funext 𝓤₀ (𝓤 ⁺)) (κ : (n : ℕ) → compact∙ (X n)) where
 
 \end{code}
 
@@ -27,20 +29,23 @@ module TypeTopology.UniformSearch (X : 𝓤  ̇) (fe : funext 𝓤₀ 𝓤) (κ 
 
 \begin{code}
 
-head : (ℕ → X) → X
-head u = u 0
++lemma : {m n : ℕ} → succ (m + n) ＝ succ m + n
++lemma {m} {zero} = refl
++lemma {m} {succ n} = ap succ (+lemma {m} {n})
 
-tail : (ℕ → X) → (ℕ → X)
-tail u = u ∘ succ
+head : {k : ℕ} → (Π n ꞉ ℕ , X (k + n)) → X k
+head 𝓊 = 𝓊 0
+
+tail : {k : ℕ} → (Π n ꞉ ℕ , X (k + n)) → Π n ꞉ ℕ , X (k + succ n)
+tail 𝓊 = 𝓊 ∘ succ
 
 infixr 9 _∷_
 
-_∷_ : X → (ℕ → X) → (ℕ → X)
+_∷_ : {k : ℕ} → X k → Π n ꞉ ℕ , X (k + succ n) → Π n ꞉ ℕ , X (k + n)
 (x ∷ α) zero     = x
 (x ∷ α) (succ i) = α i
 
-
-cons-head-tail : (α : ℕ → X) → head α ∷ tail α ＝ α
+cons-head-tail : {k : ℕ} → (α : Π n ꞉ ℕ , X (k + n)) → head α ∷ tail α ＝ α
 cons-head-tail α = dfunext fe h
  where
   h : head α ∷ tail α ∼ α
@@ -53,9 +58,12 @@ cons-head-tail α = dfunext fe h
 
 \begin{code}
 
-_＝⟦_⟧_ : (ℕ → X) → ℕ → (ℕ → X) → 𝓤  ̇
-𝓊 ＝⟦ zero   ⟧ 𝓋 = 𝟙
-𝓊 ＝⟦ succ n ⟧ 𝓋 = (head 𝓊 ＝ head 𝓋) × (tail 𝓊 ＝⟦ n ⟧ tail 𝓋 )
+_＝⟦_⟧_ : {k : ℕ} → (Π n ꞉ ℕ , X (k + n)) → ℕ → (Π n ꞉ ℕ , X (k + n)) → 𝓤  ̇
+_＝⟦_⟧_ {k = k} 𝓊 zero     𝓋 = 𝟙
+_＝⟦_⟧_ {k = k} 𝓊 (succ n) 𝓋 = (head 𝓊 ＝ head 𝓋) × τ (tail 𝓊) ＝⟦ n ⟧ τ (tail 𝓋)
+ where
+  τ : (Π n ꞉ ℕ , X (succ (k + n))) → (Π n ꞉ ℕ , X (succ k + n))
+  τ = transport (Pi ℕ) (dfunext fe′ λ n → ap X +lemma)
 
 \end{code}
 
@@ -64,21 +72,21 @@ localy constancy.
 
 \begin{code}
 
-_is-a-mod-of-lc-of_ : ℕ → ((ℕ → X) → 𝟚) → 𝓤  ̇
-n is-a-mod-of-lc-of p = (𝓊 𝓋 : ℕ → X) → 𝓊 ＝⟦ n ⟧ 𝓋 → p 𝓊 ＝ p 𝓋
+_is-a-mod-of-lc-of_ : {k : ℕ} → ℕ → ((Π n ꞉ ℕ , X (k + n)) → 𝟚) → 𝓤  ̇
+_is-a-mod-of-lc-of_ {k} n p = (𝓊 𝓋 : (Π n ꞉ ℕ , X (k + n))) → 𝓊 ＝⟦ n ⟧ 𝓋 → p 𝓊 ＝ p 𝓋
 
-is-locally-constant : ((ℕ → X) → 𝟚) → 𝓤  ̇
+is-locally-constant : {k : ℕ} → ((Π n ꞉ ℕ , X (k + n)) → 𝟚) → 𝓤  ̇
 is-locally-constant p = Σ n ꞉ ℕ , n is-a-mod-of-lc-of p
 
 \end{code}
 
 \begin{code}
 
-cons-decreases-mod-of-lc : (p : (ℕ → X) → 𝟚)
+cons-decreases-mod-of-lc : {k : ℕ} (p : (Π n ꞉ ℕ , X (k + n)) → 𝟚)
                          → (n : ℕ)
                          → (succ n) is-a-mod-of-lc-of p
-                         → (x : X) → n is-a-mod-of-lc-of (p ∘ x ∷_)
-cons-decreases-mod-of-lc p n φ x 𝓊 𝓋 eq = φ (x ∷ 𝓊) (x ∷ 𝓋) (refl , eq)
+                         → (x : X k) → n is-a-mod-of-lc-of {!!}
+cons-decreases-mod-of-lc p n φ x 𝓊 𝓋 eq = {!φ (x ∷ 𝓊) (x ∷ 𝓋) (refl , eq)!}
 
 \end{code}
 
@@ -88,8 +96,8 @@ Since `X` is assumed to be `compact∙` it must be pointed. Call this point `x�
 
 \begin{code}
 
-x₀ : X
-x₀ = compact∙-gives-pointed κ
+-- x₀ : X
+-- x₀ = compact∙-gives-pointed κ
 
 \end{code}
 
@@ -97,16 +105,16 @@ There must be a selection functional `ϵₓ` for `X`:
 
 \begin{code}
 
-X-is-compact∙' : compact∙' X
-X-is-compact∙' = compact∙-gives-compact∙' κ
+-- X-is-compact∙' : compact∙' X
+-- X-is-compact∙' = compact∙-gives-compact∙' κ
 
-ϵₓ : (X → 𝟚) → X
-ϵₓ = pr₁ X-is-compact∙'
+-- ϵₓ : (X → 𝟚) → X
+-- ϵₓ = pr₁ X-is-compact∙'
 
-specification-of-ϵₓ : (p : X → 𝟚)
-                    → p (ϵₓ p) ＝ ₁
-                    → (x : X) → p x ＝ ₁
-specification-of-ϵₓ = pr₂ X-is-compact∙'
+-- specification-of-ϵₓ : (p : X → 𝟚)
+--                     → p (ϵₓ p) ＝ ₁
+--                     → (x : X) → p x ＝ ₁
+-- specification-of-ϵₓ = pr₂ X-is-compact∙'
 
 \end{code}
 
@@ -115,18 +123,18 @@ functional
 
 \begin{code}
 
-∀ₓ : (X → 𝟚) → 𝟚
-∀ₓ p = p (ϵₓ p)
+-- ∀ₓ : (X → 𝟚) → 𝟚
+-- ∀ₓ p = p (ϵₓ p)
 
-specification-of-∀ₓ-⇒ : (p : X → 𝟚)
-                      → ∀ₓ p ＝ ₁
-                      → (x : X) → p x ＝ ₁
-specification-of-∀ₓ-⇒ = specification-of-ϵₓ
+-- specification-of-∀ₓ-⇒ : (p : X → 𝟚)
+--                       → ∀ₓ p ＝ ₁
+--                       → (x : X) → p x ＝ ₁
+-- specification-of-∀ₓ-⇒ = specification-of-ϵₓ
 
-specification-of-∀ₓ-⇐ : (p : X → 𝟚)
-                      → ((x : X) → p x ＝ ₁)
-                      → ∀ₓ p ＝ ₁
-specification-of-∀ₓ-⇐ p φ = φ (ϵₓ p)
+-- specification-of-∀ₓ-⇐ : (p : X → 𝟚)
+--                       → ((x : X) → p x ＝ ₁)
+--                       → ∀ₓ p ＝ ₁
+-- specification-of-∀ₓ-⇐ p φ = φ (ϵₓ p)
 
 \end{code}
 
@@ -135,15 +143,15 @@ but only for locally constant predicates.
 
 \begin{code}
 
-ϵₙ : ℕ → ((ℕ → X) → 𝟚) → (ℕ → X)
-∀ₙ : ℕ → ((ℕ → X) → 𝟚) → 𝟚
+-- ϵₙ : ℕ → ((ℕ → X) → 𝟚) → (ℕ → X)
+-- ∀ₙ : ℕ → ((ℕ → X) → 𝟚) → 𝟚
 
-ϵₙ zero     p = λ _ → x₀
-ϵₙ (succ n) p = y₀ ∷ ϵₙ n (λ α → p (y₀ ∷ α))
- where
-  y₀ = ϵₓ λ x → ∀ₙ n λ α → p (x ∷ α)
+-- ϵₙ zero     p = λ _ → x₀
+-- ϵₙ (succ n) p = y₀ ∷ ϵₙ n (λ α → p (y₀ ∷ α))
+--  where
+--   y₀ = ϵₓ λ x → ∀ₙ n λ α → p (x ∷ α)
 
-∀ₙ n p = p (ϵₙ n p)
+-- ∀ₙ n p = p (ϵₙ n p)
 
 \end{code}
 
@@ -151,42 +159,42 @@ Specification of `∀ₙ`
 
 \begin{code}
 
-specification-of-∀ₙ-⇒ : (p : (ℕ → X) → 𝟚)
-                      → (n : ℕ)
-                      → n is-a-mod-of-lc-of p
-                      → ((𝓊 : ℕ → X) → p 𝓊 ＝ ₁)
-                      → ∀ₙ n p ＝ ₁
-specification-of-∀ₙ-⇒ p n ζ φ = φ (ϵₙ n p)
+-- specification-of-∀ₙ-⇒ : (p : (ℕ → X) → 𝟚)
+--                       → (n : ℕ)
+--                       → n is-a-mod-of-lc-of p
+--                       → ((𝓊 : ℕ → X) → p 𝓊 ＝ ₁)
+--                       → ∀ₙ n p ＝ ₁
+-- specification-of-∀ₙ-⇒ p n ζ φ = φ (ϵₙ n p)
 
 \end{code}
 
 \begin{code}
 
-specification-of-∀ₙ-⇐ : (p : (ℕ → X) → 𝟚)
-                      → (n : ℕ)
-                      → n is-a-mod-of-lc-of p
-                      → ∀ₙ n p ＝ ₁
-                      → (𝓊 : ℕ → X) → p 𝓊 ＝ ₁
-specification-of-∀ₙ-⇐ p zero     ζ φ 𝓊 = p 𝓊                 ＝⟨ ζ 𝓊 (λ _ → x₀) ⋆ ⟩
-                                         p (λ _ → x₀)        ＝⟨ φ                ⟩
-                                         ₁                   ∎
-specification-of-∀ₙ-⇐ p (succ n) ζ φ 𝓊 = p 𝓊                 ＝⟨ † ⟩
-                                         p (head 𝓊 ∷ tail 𝓊) ＝⟨ ‡ ⟩
-                                         ₁                   ∎
- where
-  x₁ : X
-  x₁ = ϵₓ λ y → ∀ₙ n (p ∘ y ∷_)
+-- specification-of-∀ₙ-⇐ : (p : (ℕ → X) → 𝟚)
+--                       → (n : ℕ)
+--                       → n is-a-mod-of-lc-of p
+--                       → ∀ₙ n p ＝ ₁
+--                       → (𝓊 : ℕ → X) → p 𝓊 ＝ ₁
+-- specification-of-∀ₙ-⇐ p zero     ζ φ 𝓊 = p 𝓊                 ＝⟨ ζ 𝓊 (λ _ → x₀) ⋆ ⟩
+--                                          p (λ _ → x₀)        ＝⟨ φ                ⟩
+--                                          ₁                   ∎
+-- specification-of-∀ₙ-⇐ p (succ n) ζ φ 𝓊 = p 𝓊                 ＝⟨ † ⟩
+--                                          p (head 𝓊 ∷ tail 𝓊) ＝⟨ ‡ ⟩
+--                                          ₁                   ∎
+--  where
+--   x₁ : X
+--   x₁ = ϵₓ λ y → ∀ₙ n (p ∘ y ∷_)
 
-  ♠ : ∀ₙ n (p ∘ x₁ ∷_) ＝ ₁ → (x : X) → ∀ₙ n (p ∘ x ∷_) ＝ ₁
-  ♠ = specification-of-∀ₓ-⇒ λ y → ∀ₙ n (p ∘ y ∷_)
+--   ♠ : ∀ₙ n (p ∘ x₁ ∷_) ＝ ₁ → (x : X) → ∀ₙ n (p ∘ x ∷_) ＝ ₁
+--   ♠ = specification-of-∀ₓ-⇒ λ y → ∀ₙ n (p ∘ y ∷_)
 
-  IH : (x : X) → ∀ₙ n (p ∘ x ∷_) ＝ ₁ → (𝓋 : ℕ → X) → p (x ∷ 𝓋) ＝ ₁
-  IH x = specification-of-∀ₙ-⇐ (p ∘ x ∷_) n (cons-decreases-mod-of-lc p n ζ x)
+--   IH : (x : X) → ∀ₙ n (p ∘ x ∷_) ＝ ₁ → (𝓋 : ℕ → X) → p (x ∷ 𝓋) ＝ ₁
+--   IH x = specification-of-∀ₙ-⇐ (p ∘ x ∷_) n (cons-decreases-mod-of-lc p n ζ x)
 
-  † : p 𝓊 ＝ p (head 𝓊 ∷ tail 𝓊)
-  † = ap p (cons-head-tail 𝓊 ⁻¹)
+--   † : p 𝓊 ＝ p (head 𝓊 ∷ tail 𝓊)
+--   † = ap p (cons-head-tail 𝓊 ⁻¹)
 
-  ‡ : p (head 𝓊 ∷ tail 𝓊) ＝ ₁
-  ‡ = IH (head 𝓊) (♠ φ (head 𝓊)) (tail 𝓊)
+--   ‡ : p (head 𝓊 ∷ tail 𝓊) ＝ ₁
+--   ‡ = IH (head 𝓊) (♠ φ (head 𝓊)) (tail 𝓊)
 
 \end{code}
