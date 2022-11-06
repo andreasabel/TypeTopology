@@ -135,6 +135,8 @@ A convenient shorthand for the identity type of a set.
 
 module EqualityCombinator (A : 𝓤  ̇) (s : is-set A) where
 
+ infix 10 _＝ₛ_
+
  _＝ₛ_ : A → A → Ω 𝓤
  x ＝ₛ y = (x ＝ y) , s
 
