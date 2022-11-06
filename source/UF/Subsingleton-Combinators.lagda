@@ -129,6 +129,17 @@ module Existential (pt : propositional-truncations-exist) where
 
 \end{code}
 
+A convenient shorthand for the identity type of a set.
+
+\begin{code}
+
+module EqualityCombinator (A : 𝓤  ̇) (s : is-set A) where
+
+ _＝ₛ_ : A → A → Ω 𝓤
+ x ＝ₛ y = (x ＝ y) , s
+
+\end{code}
+
 \section{A module for importing all combinators}
 
 \begin{code}
