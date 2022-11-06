@@ -11,7 +11,6 @@ open import UF.UA-FunExt
 open import MLTT.List hiding ([_])
 
 module UniformContinuityTopos.MonoidAction
-        (pt : propositional-truncations-exist)
         (fe : Fun-Ext)
         where
 
@@ -22,12 +21,10 @@ open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open import UF.SIP-Examples
 
-open PropositionalTruncation pt
-open AllCombinators pt fe
+open Universal fe
+open Conjunction
 
 open monoid
-
-open import UniformContinuityTopos.UniformContinuityMonoid pt fe
 
 \end{code}
 
