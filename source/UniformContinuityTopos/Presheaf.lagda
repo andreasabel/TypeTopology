@@ -22,7 +22,7 @@ open import UniformContinuityTopos.MonoidAction fe
 
 \end{code}
 
-A presheaf of the uniform continuity topos is just a `ℂ`-set.
+A presheaf over the uniform continuity topos is just a `ℂ`-set.
 
 \begin{code}
 
