@@ -64,10 +64,22 @@ cons-uniformly-continuous (b ∷ b⃗) =
 𝔠𝔬𝔫𝔰 : Vec 𝟚 n → UC-Endomap
 𝔠𝔬𝔫𝔰 b⃗ = cons b⃗ , cons-uniformly-continuous b⃗
 
-𝒥 : Fam 𝓤₀ ⟪ ℂ ⟫
-𝒥 = List 𝟚 , 𝒻
+𝒥 : Fam 𝓤₀ (Fam 𝓤₀ ⟪ ℂ ⟫)
+𝒥 = ℕ , (λ n → Vec 𝟚 n , 𝔠𝔬𝔫𝔰)
+
+open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
+
+𝒥-is-coverage : is-coverage 𝒥 holds
+𝒥-is-coverage = †
  where
-  𝒻 : List 𝟚 → ⟪ ℂ ⟫
-  𝒻 s = cons s , cons-uniformly-continuous s
+  Ψ : Ω 𝓤₀
+  Ψ = Ɐ t ∶ ⟪ ℂ ⟫ , Ɐ m ∶ ℕ ,
+       Ǝ̃ n ∶ ℕ ,
+        Ɐ s ∶ Vec 𝟚 n ,
+         Ǝ̃ t′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m ,
+          t ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ t′
+
+  † : Ψ holds
+  † t m = {!!}
 
 \end{code}
