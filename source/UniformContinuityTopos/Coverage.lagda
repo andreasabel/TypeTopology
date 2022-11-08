@@ -70,9 +70,11 @@ _*_ = pr₁ (pr₁ (pr₂ M))
 
 open EqualityCombinator ⟪ M ⟫ (monoid-carrier-is-set M)
 
-is-coverage : (𝒥 : Fam 𝓦 ⟪ M ⟫) → Ω (𝓤 ⊔ 𝓦)
-is-coverage 𝒥 =
- Ɐ u ∶ ⟪ M ⟫ , Ɐ i ∶ index 𝒥 ,
-  Ǝ (v , j) ∶ ⟪ M ⟫ × index 𝒥 , (u * (𝒥 [ i ]) ＝ₛ (𝒥 [ j ]) * v) holds
+is-coverage : (𝒥 : Fam 𝓦 (Fam 𝓦 ⟪ M ⟫)) → Ω (𝓤 ⊔ 𝓦)
+is-coverage 𝒥 = Ɐ u ∶ ⟪ M ⟫ , Ɐ i ∶ index 𝒥 ,
+                 Ǝ̃ j ∶ index 𝒥 ,
+                  Ɐ s ∶ index (𝒥 [ j ]) ,
+                   Ǝ̃ v ∶ ⟪ M ⟫ , Ǝ̃ s′ ∶ index (𝒥 [ i ]) ,
+                    u * (𝒥 [ j ] [ s ]) ＝ₛ (𝒥 [ i ] [ s′ ]) * v
 
 \end{code}
