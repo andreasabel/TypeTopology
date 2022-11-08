@@ -66,9 +66,7 @@ Definition of uniform continuity of an endomap of the Cantor space.
 
 is-uniformly-continuous : (Cantor → Cantor) → Ω 𝓤₀
 is-uniformly-continuous t =
- Ɐ m ∶ ℕ ,
-  Ǝ n ∶ ℕ ,
-   (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n ⟧ β ⇒ t α ＝⟦ m ⟧ t β) holds
+ Ɐ m ∶ ℕ , Ǝ̃ n ∶ ℕ , Ɐ α , Ɐ β , α ＝⟦ n ⟧ β ⇒ t α ＝⟦ m ⟧ t β
 
 UC-Endomap : 𝓤₀  ̇
 UC-Endomap = Σ t ꞉ (Cantor → Cantor) , is-uniformly-continuous t holds
