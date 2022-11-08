@@ -109,6 +109,11 @@ module Truncation (pt : propositional-truncations-exist) where
 
 \section{Existential quantification}
 
+We have two versions of the existential proposition combinator: (1) `Ǝ` that
+doesn't require the type family in consideration to consist of propositions, and
+(2) `Ǝ̃` which works just on families of propositions. The latter is convenient
+to avoid `_holds` if the family being quantified over is already propositional.
+
 \begin{code}
 
 module Existential (pt : propositional-truncations-exist) where
@@ -126,6 +131,22 @@ module Existential (pt : propositional-truncations-exist) where
 
  syntax ∃[∶]-syntax I (λ i → e) = Ǝ i ∶ I , e
  syntax ∃[]-syntax    (λ i → e) = Ǝ i , e
+
+\end{code}
+
+\begin{code}
+
+ ∃̃[∶]-syntax : (I : 𝓤 ̇) → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∃̃[∶]-syntax I P = ∥ Σ i ꞉ I , P i holds ∥Ω
+
+ ∃̃[]-syntax : {I : 𝓤 ̇} → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∃̃[]-syntax {I = I} P = ∃̃[∶]-syntax I P
+
+ infixr -1 ∃̃[∶]-syntax
+ infixr -1 ∃̃[]-syntax
+
+ syntax ∃̃[∶]-syntax I (λ i → e) = Ǝ̃ i ∶ I , e
+ syntax ∃̃[]-syntax    (λ i → e) = Ǝ̃ i , e
 
 \end{code}
 
