@@ -53,10 +53,10 @@ infix 2 compr-syntax
 
 syntax compr-syntax I (λ x → e) = ⁅ e ∣ x ∶ I ⁆
 
-index : {A : 𝓤  ̇} → Fam 𝓦 A  → 𝓦  ̇
+index : {A : 𝓥  ̇} → Fam 𝓦 A  → 𝓦  ̇
 index (I , _) = I
 
-_[_] : {A : 𝓤 ̇} → (U : Fam 𝓥 A) → index U → A
+_[_] : {A : 𝓥  ̇} → (U : Fam 𝓦 A) → index U → A
 (_ , f) [ i ] = f i
 
 infix 14 _[_]
