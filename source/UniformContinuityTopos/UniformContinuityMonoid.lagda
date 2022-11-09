@@ -135,10 +135,10 @@ In accordance with our convention of using 𝔣𝔯𝔞𝔨𝔱𝔲𝔯 letters 
 
 \end{code}
 
+We now prove that the composition of two uniformly continuous endomaps are
+uniformly continuous:
+
 \begin{code}
-
-open monoid
-
 
 ∘-is-uniformly-continuous : (t₁ t₂ : Cantor → Cantor)
                           → is-uniformly-continuous t₁ holds
@@ -157,15 +157,25 @@ open monoid
       ※ : (Ɐ α , Ɐ β , α ＝⟦ n₁ ⟧ β ⇒ t₂ (t₁ α) ＝⟦ m ⟧ t₂ (t₁ β)) holds
       ※ α β p = φ (t₁ α) (t₁ β) (ψ α β p)
 
+\end{code}
+
+We can now define a composition operator on the type `UC-Endomap` directly:
+
+\begin{code}
+
 _⊚_ : UC-Endomap → UC-Endomap → UC-Endomap
 (t₂ , ζ₂) ⊚ (t₁ , ζ₁) = t₂ ∘ t₁ , ∘-is-uniformly-continuous t₁ t₂ ζ₁ ζ₂
 
-ℂ-monoid-structure : monoid-structure UC-Endomap
-ℂ-monoid-structure = _⊚_ , 𝔦𝔡
-
 \end{code}
 
+The operator `_⊚_` together with `𝔦𝔡` is a monoid structure:
+
 \begin{code}
+
+open monoid
+
+ℂ-monoid-structure : monoid-structure UC-Endomap
+ℂ-monoid-structure = _⊚_ , 𝔦𝔡
 
 ℂ-satisfies-monoid-axioms : monoid-axioms UC-Endomap ℂ-monoid-structure
 ℂ-satisfies-monoid-axioms = σ , ι₁ , ι₂ , γ
@@ -185,6 +195,9 @@ _⊚_ : UC-Endomap → UC-Endomap → UC-Endomap
   γ 𝓉₁ 𝓉₂ 𝓉₃ = UC-Endomap-extensional-equality λ _ → refl
 
 \end{code}
+
+Finally, we define `ℂ` to be the monoid of uniformly continuous endomaps on the
+Cantor space:
 
 \begin{code}
 
