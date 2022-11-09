@@ -32,6 +32,8 @@ open AllCombinators pt fe
 
 \end{code}
 
+The _Cantor type_ is the type of Boolean sequences:
+
 \begin{code}
 
 Cantor : 𝓤₀  ̇
@@ -40,13 +42,13 @@ Cantor = ℕ → 𝟚
 Cantor-is-set : is-set Cantor
 Cantor-is-set = Π-is-set fe λ _ → 𝟚-is-set
 
-open EqualityCombinator 𝟚 𝟚-is-set
-
 \end{code}
 
 Some preliminary operations on the Cantor space.
 
 \begin{code}
+
+open EqualityCombinator 𝟚 𝟚-is-set
 
 head : Cantor → 𝟚
 head α = α 0
@@ -60,7 +62,7 @@ _＝⟦_⟧_ : Cantor → ℕ → Cantor → Ω 𝓤₀
 
 \end{code}
 
-Definition of uniform continuity of an endomap of the Cantor space.
+Definition of uniform continuity of an endomap of the Cantor space:
 
 \begin{code}
 
@@ -68,12 +70,20 @@ is-uniformly-continuous : (Cantor → Cantor) → Ω 𝓤₀
 is-uniformly-continuous t =
  Ɐ m ∶ ℕ , Ǝ̃ n ∶ ℕ , Ɐ α , Ɐ β , α ＝⟦ n ⟧ β ⇒ t α ＝⟦ m ⟧ t β
 
+\end{code}
+
+We denote by `UC-Endomap` the type of _uniformly continuous endomaps_ on the
+Cantor space:
+
+\begin{code}
+
 UC-Endomap : 𝓤₀  ̇
 UC-Endomap = Σ t ꞉ (Cantor → Cantor) , is-uniformly-continuous t holds
 
 \end{code}
 
-Conventient shorthand for the first projection:
+Given an inhabitant `𝓉` of `UC-Endomap`, `⦅ 𝓉 ⦆` denotes the underlying function
+of `𝓉`:
 
 \begin{code}
 
@@ -81,6 +91,10 @@ Conventient shorthand for the first projection:
 ⦅ t , _ ⦆ = t
 
 \end{code}
+
+Two inhabitants `𝓉₁, 𝓉₂ : UC-Endomap` are equal whenever `⦅ 𝓉₁ ⦆` and `⦅ 𝓉₂ ⦆`
+are extensionally equal. We record this fact in
+`UC-Endomap-extensional-equality`:
 
 \begin{code}
 
@@ -97,9 +111,11 @@ UC-Endomap-extensional-equality {𝓉₁} {𝓉₂} φ = to-subtype-＝ β γ
 
 \end{code}
 
-\begin{code}
+\section{Definition of the monoid ℂ}
 
-open monoid
+We first prove that the identity map `id` is uniformly continuous:
+
+\begin{code}
 
 id-is-uniformly-continuous : is-uniformly-continuous id holds
 id-is-uniformly-continuous m = ∣ m , † ∣
@@ -107,8 +123,22 @@ id-is-uniformly-continuous m = ∣ m , † ∣
   † : (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ m ⟧ β ⇒ α ＝⟦ m ⟧ β) holds
   † α β p = p
 
+\end{code}
+
+In accordance with our convention of using 𝔣𝔯𝔞𝔨𝔱𝔲𝔯 letters for inhabitants of
+`UC-Endomap`, we define `𝔦𝔡` to be the identity uniformly continuous endomap:
+
+\begin{code}
+
 𝔦𝔡 : UC-Endomap
 𝔦𝔡 = id , id-is-uniformly-continuous
+
+\end{code}
+
+\begin{code}
+
+open monoid
+
 
 ∘-is-uniformly-continuous : (t₁ t₂ : Cantor → Cantor)
                           → is-uniformly-continuous t₁ holds
