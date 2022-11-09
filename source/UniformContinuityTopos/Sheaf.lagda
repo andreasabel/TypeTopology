@@ -46,4 +46,7 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
      where
       open EqualityCombinator P s
 
+ Sheaf : 𝓤 ⁺ ⊔ 𝓦 ̇
+ Sheaf = Σ 𝒫 ꞉ [ M ]-set , is-sheaf 𝒫 holds
+
 \end{code}
