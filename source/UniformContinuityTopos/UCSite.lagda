@@ -41,10 +41,6 @@ cons : Vec 𝟚 n → Cantor → Cantor
 cons []      = id
 cons (b ∷ b⃗) = cons-bit b ∘ cons b⃗
 
-\end{code}
-
-\begin{code}
-
 cons-bit-is-uniformly-continuous : (b : 𝟚)
                                  → is-uniformly-continuous (cons-bit b) holds
 cons-bit-is-uniformly-continuous b zero     = ∣ zero , (λ _ _ _ → ⋆) ∣
