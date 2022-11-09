@@ -27,7 +27,7 @@ open import UniformContinuityTopos.MonoidAction fe
 open import UF.Subsingleton-Combinators
 
 open Universal fe
-open Existential pt
+open Existential pt fe
 
 \end{code}
 
@@ -70,11 +70,14 @@ _*_ = pr₁ (pr₁ (pr₂ M))
 
 open EqualityCombinator ⟪ M ⟫ (monoid-carrier-is-set M)
 
-is-coverage : (𝒥 : Fam 𝓦 (Fam 𝓦 ⟪ M ⟫)) → Ω (𝓤 ⊔ 𝓦)
+is-coverage : Fam 𝓦 (Fam 𝓦 ⟪ M ⟫) → Ω (𝓤 ⊔ 𝓦)
 is-coverage 𝒥 = Ɐ u ∶ ⟪ M ⟫ , Ɐ i ∶ index 𝒥 ,
                  Ǝ̃ j ∶ index 𝒥 ,
                   Ɐ s ∶ index (𝒥 [ j ]) ,
                    Ǝ̃ v ∶ ⟪ M ⟫ , Ǝ̃ s′ ∶ index (𝒥 [ i ]) ,
                     u * (𝒥 [ j ] [ s ]) ＝ₛ (𝒥 [ i ] [ s′ ]) * v
+
+Coverage : (𝓦 : Universe) → 𝓤 ⊔ 𝓦 ⁺  ̇
+Coverage 𝓦 = Σ 𝒥 ꞉ Fam 𝓦 (Fam 𝓦 ⟪ M ⟫) , is-coverage 𝒥 holds
 
 \end{code}
