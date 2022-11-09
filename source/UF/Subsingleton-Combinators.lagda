@@ -116,7 +116,7 @@ to avoid `_holds` if the family being quantified over is already propositional.
 
 \begin{code}
 
-module Existential (pt : propositional-truncations-exist) where
+module Existential (pt : propositional-truncations-exist) (fe : Fun-Ext) where
 
  open Truncation pt
 
@@ -150,6 +150,25 @@ module Existential (pt : propositional-truncations-exist) where
 
 \end{code}
 
+\begin{code}
+
+ ∃![∶]-syntax : (I : 𝓤  ̇) → (I → Ω 𝓥) →  Ω (𝓤 ⊔ 𝓥)
+ ∃![∶]-syntax I P = is-contr (Σ i ꞉ I , P i holds) , †
+  where
+   † : is-prop (is-contr (Σ i ꞉ I , P i holds))
+   † = being-singleton-is-prop fe
+
+ ∃![]-syntax : {I : 𝓤 ̇} → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∃![]-syntax {I = I} P = ∃![∶]-syntax I P
+
+ infixr -1 ∃![∶]-syntax
+ infixr -1 ∃![]-syntax
+
+ syntax ∃![∶]-syntax I (λ i → e) = !∃ i ∶ I , e
+ syntax ∃![]-syntax    (λ i → e) = !∃ i , e
+
+\end{code}
+
 A convenient shorthand for the identity type of a set.
 
 \begin{code}
@@ -172,11 +191,11 @@ module AllCombinators
         (fe : Fun-Ext)
        where
 
- open Conjunction    public
- open Universal   fe public
- open Implication fe public
- open Disjunction pt public
- open Existential pt public
- open Truncation  pt public
+ open Conjunction       public
+ open Universal   fe    public
+ open Implication fe    public
+ open Disjunction pt    public
+ open Existential pt fe public
+ open Truncation  pt    public
 
 \end{code}
