@@ -23,7 +23,6 @@ open import UF.Subsingleton-Combinators
 
 open AllCombinators pt fe
 
-open import UniformContinuityTopos.UniformContinuityMonoid pt fe
 open import UniformContinuityTopos.Vector
 open import UniformContinuityTopos.MonoidAction fe
 open import UniformContinuityTopos.Coverage pt fe M
@@ -49,6 +48,12 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
 
  Sheaf : 𝓤 ⁺ ⊔ 𝓦  ̇
  Sheaf = Σ 𝒫 ꞉ [ M ]-set , is-sheaf 𝒫 holds
+
+ P[_] : Sheaf → [ M ]-set
+ P[ A , _ ] = A
+
+ ¡_¡ : [ M ]-set → 𝓤  ̇
+ ¡ (P , _) , _ ¡ = P
 
 \end{code}
 
