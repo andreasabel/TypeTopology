@@ -33,6 +33,20 @@ open monoid
 ⟪_⟫ : Monoid {𝓤} → 𝓤  ̇
 ⟪ A , _ ⟫ = A
 
+ε[_] : (M : Monoid {𝓤}) → ⟪ M ⟫
+ε[ _ , (_ , 𝟏) , _ ] = 𝟏
+
+monoid-op-syntax : (M : Monoid {𝓤}) → ⟪ M ⟫ → ⟪ M ⟫ → ⟪ M ⟫
+monoid-op-syntax (_ , (_∙_ , _) , _) = _∙_
+
+syntax monoid-op-syntax M x y = x *[ M ] y
+
+ε[_]-is-left-unit : (M : Monoid {𝓤}) (x : ⟪ M ⟫) → ε[ M ] *[ M ] x ＝ x
+ε[_]-is-left-unit (_ , _ , (_ , p , _)) = p
+
+ε[_]-is-right-unit : (M : Monoid {𝓤}) (x : ⟪ M ⟫) → x *[ M ] ε[ M ] ＝ x
+ε[_]-is-right-unit (_ , _ , (_ , _ , q , r)) = q
+
 monoid-carrier-is-set : (M : Monoid {𝓤}) → is-set ⟪ M ⟫
 monoid-carrier-is-set (_ , _ , (σ , _)) = σ
 
@@ -53,7 +67,17 @@ is-[_]-action {𝓤} {A} M@(_ , (_*_ , ε) , _) σ _·_ = β ∧ γ
 [_]-set : Monoid {𝓤} → 𝓤 ⁺  ̇
 [_]-set {𝓤} M = Σ A ꞉ hSet 𝓤 , [ M ]-action-on A
 
-¡_¡ : {A : 𝓤  ̇} {M : Monoid {𝓤}} → [ M ]-set → 𝓤  ̇
-¡_¡ ((P , _) , _) = P
+carrier : (M : Monoid {𝓤}) → [ M ]-set → 𝓤  ̇
+carrier M ((P , _) , _·_) = P
+
+μ : (M : Monoid {𝓤}) → (P : [ M ]-set) → carrier M P → ⟪ M ⟫ → carrier M P
+μ M (P , _∙_ , _) = _∙_
+
+action-preserves-unit : (M : Monoid {𝓤}) → (P : [ M ]-set) → (x : carrier M P) → μ M P x ε[ M ] ＝ x
+action-preserves-unit M (P , _ , (p , _)) = p
+
+actions-are-functorial : (M : Monoid {𝓤}) (𝒫 : [ M ]-set)
+                       → (x : carrier M 𝒫) (u v : ⟪ M ⟫) → μ M 𝒫 x (u *[ M ] v) ＝ μ M 𝒫 (μ M 𝒫 x u) v
+actions-are-functorial M (P , _ , (_ , q)) = q
 
 \end{code}
