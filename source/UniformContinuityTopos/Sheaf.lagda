@@ -5,6 +5,7 @@ open import UF.Base
 open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Univalence
+open import UF.Miscelanea
 open import UF.UA-FunExt
 open import MLTT.Fin
 
@@ -46,7 +47,37 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
      where
       open EqualityCombinator P s
 
- Sheaf : 𝓤 ⁺ ⊔ 𝓦 ̇
+ Sheaf : 𝓤 ⁺ ⊔ 𝓦  ̇
  Sheaf = Σ 𝒫 ꞉ [ M ]-set , is-sheaf 𝒫 holds
+
+\end{code}
+
+\begin{code}
+
+ -- is-natural : {!()!}
+ -- is-natural = {!!}
+
+\end{code}
+
+The terminal sheaf
+
+\begin{code}
+
+ 𝟏ₛ : Sheaf
+ 𝟏ₛ = ((𝟙 , 𝟙-is-set) , _·_ , γ) , ♠
+  where
+   open EqualityCombinator 𝟙 𝟙-is-set
+
+   _·_ : 𝟙 → ⟪ M ⟫ → 𝟙
+   ⋆ · _ = ⋆
+
+   γ : is-[ M ]-action 𝟙-is-set _·_ holds
+   γ = 𝟙-is-prop ⋆ , λ { ⋆ x y → refl }
+
+   ♠ : is-sheaf ((𝟙 , 𝟙-is-set) , _·_ , γ) holds
+   ♠ i f = (⋆ , †) , λ { (⋆ , p) → to-subtype-＝ (λ { ⋆ → holds-is-prop ((Ɐ s ∶ index (𝒥 [ i ]) , ⋆ ＝ₛ ⋆)) }) refl }
+    where
+     † : (Ɐ s ∶ index (𝒥 [ i ]) , ⋆ ＝ₛ ⋆) holds
+     † _ = refl
 
 \end{code}
