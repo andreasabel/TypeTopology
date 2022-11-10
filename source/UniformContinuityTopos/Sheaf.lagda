@@ -59,8 +59,17 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
 
 \begin{code}
 
- -- is-natural : {!()!}
- -- is-natural = {!!}
+ is-natural : (((P , _) , _) ((Q , _) , _) : [ M ]-set) → (P → Q) → Ω 𝓤
+ is-natural ((P , _) , (_·₁_ , _)) ((Q , σ₂) , (_·₂_ , _)) ϕ =
+  Ɐ p ∶ P , Ɐ u ∶ ⟪ M ⟫ , ϕ (p ·₁ u) ＝ₛ (ϕ p) ·₂ u
+   where
+    open EqualityCombinator Q σ₂ using (_＝ₛ_)
+
+ ℋℴ𝓂 : Sheaf → Sheaf → 𝓤  ̇
+ ℋℴ𝓂 (𝒫@((P , _) , _) , _) (𝒬@((Q , _) , _) , _) = Σ ϕ ꞉ (P → Q) , is-natural 𝒫 𝒬 ϕ holds
+
+\end{code}
+
 
 \end{code}
 
