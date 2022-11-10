@@ -66,8 +66,14 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
    where
     open EqualityCombinator Q σ₂ using (_＝ₛ_)
 
+ is-natural′ : (𝒫 𝒬 : Sheaf) → (¡ P[ 𝒫 ] ¡  → ¡ P[ 𝒬 ] ¡) → Ω 𝓤
+ is-natural′ (𝒫 , _) (𝒬 , _) = is-natural 𝒫 𝒬
+
  ℋℴ𝓂 : Sheaf → Sheaf → 𝓤  ̇
  ℋℴ𝓂 (𝒫@((P , _) , _) , _) (𝒬@((Q , _) , _) , _) = Σ ϕ ꞉ (P → Q) , is-natural 𝒫 𝒬 ϕ holds
+
+ apply : (𝒫 𝒬 : Sheaf) → ℋℴ𝓂 𝒫 𝒬 → ¡ P[ 𝒫 ] ¡ → ¡ P[ 𝒬 ] ¡
+ apply 𝒫 𝒬 (𝒻 , _) = 𝒻
 
 \end{code}
 
@@ -199,5 +205,44 @@ The product of two sheaves
         ※ : (r : P × Q)
           → is-prop ((s : index (𝒥 [ i ])) → (r ∙× ((𝒥 [ i ]) [ s ])) ＝ 𝒿 s)
         ※ r = Π-is-prop fe (λ _ → ×-is-set σ₁ σ₂)
+
+\end{code}
+
+The projection morphisms
+
+\begin{code}
+
+ _€_ : {A : 𝓤  ̇} {B : 𝓥  ̇} {C : 𝓥  ̇} → ((A → B) × C) → A → B
+ _€_ p = p .pr₁
+
+ infixr 5 _€_
+
+ π₁ : (P Q : Sheaf) → ℋℴ𝓂 (P ×ₛ Q) P
+ π₁ 𝒫 𝒬 = pr₁ , ν
+  where
+   ν : is-natural′ (𝒫 ×ₛ 𝒬) 𝒫 pr₁ holds
+   ν u v = refl
+
+ π₂ : (P Q : Sheaf) → ℋℴ𝓂 (P ×ₛ Q) Q
+ π₂ 𝒫 𝒬 = pr₂ , ν
+  where
+   ν : is-natural′ (𝒫 ×ₛ 𝒬) 𝒬 pr₂ holds
+   ν u v = refl
+
+ pair : (O P Q : Sheaf) → ℋℴ𝓂 O P → ℋℴ𝓂 O Q → ℋℴ𝓂 O (P ×ₛ Q)
+ pair 𝒪 𝒫 𝒬 ρ₁ ρ₂ = 𝒻 , ν
+  where
+   𝒻 : ¡ P[ 𝒪 ] ¡ → ¡ P[ 𝒫 ×ₛ 𝒬 ] ¡
+   𝒻 o = apply 𝒪 𝒫 ρ₁ o , apply 𝒪 𝒬 ρ₂ o
+
+   ν : is-natural′ 𝒪 (𝒫 ×ₛ 𝒬) 𝒻 holds
+   ν o u =
+    𝒻 (μ M P[ 𝒪 ] o u)                                   ＝⟨ refl ⟩
+    ρ₁ .pr₁ (μ M P[ 𝒪 ] o u) , ρ₂ .pr₁ (μ M P[ 𝒪 ] o u)  ＝⟨ I    ⟩
+    μ M P[ 𝒫 ] (ρ₁ .pr₁ o) u , ρ₂ .pr₁ (μ M P[ 𝒪 ] o u)  ＝⟨ II   ⟩
+    μ M P[ 𝒫 ] (ρ₁ .pr₁ o) u , μ M P[ 𝒬 ] (ρ₂ .pr₁ o) u  ∎
+     where
+      I  = ap (λ - → - , ρ₂ .pr₁ (μ M P[ 𝒪 ] o u)) (pr₂ ρ₁ o u)
+      II = ap (λ - → μ M P[ 𝒫 ] (ρ₁ .pr₁ o) u , -) (pr₂ ρ₂ o u)
 
 \end{code}
