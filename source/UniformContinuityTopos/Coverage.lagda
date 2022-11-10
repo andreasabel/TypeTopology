@@ -35,7 +35,7 @@ open Existential pt fe
 
 \begin{code}
 
-Fam : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+Fam : (𝓤 : Universe) → 𝓦  ̇ → 𝓤 ⁺ ⊔ 𝓦  ̇
 Fam 𝓤 A = Σ I ꞉ (𝓤 ̇) , (I → A)
 
 fmap-syntax : {A : 𝓤 ̇} {B : 𝓥 ̇}
