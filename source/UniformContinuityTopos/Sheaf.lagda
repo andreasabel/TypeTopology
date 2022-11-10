@@ -70,6 +70,12 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
 
 \end{code}
 
+The identity natural transformation:
+
+\begin{code}
+
+ 𝟏[_] : (P : Sheaf) → ℋℴ𝓂 P P
+ 𝟏[ P ] = id , λ _ _ → refl
 
 \end{code}
 
