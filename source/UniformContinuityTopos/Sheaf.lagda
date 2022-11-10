@@ -26,6 +26,7 @@ open AllCombinators pt fe
 open import UniformContinuityTopos.Vector
 open import UniformContinuityTopos.MonoidAction fe
 open import UniformContinuityTopos.Coverage pt fe M
+open import UF.Subsingletons-FunExt
 
 open PropositionalTruncation pt
 
@@ -142,12 +143,61 @@ The product of two sheaves
     ℛ = ((P × Q) , ×-is-set σ₁ σ₂) , 𝒶
 
     ♠ : is-sheaf ℛ holds
-    ♠ i 𝒿 = {!!}
+    ♠ i 𝒿 = ((p , q) , φ) , ψ
      where
-      foo : {!!}
-      foo = ♠₁ i (pr₁ ∘ 𝒿)
+      open EqualityCombinator P σ₁ renaming (_＝ₛ_ to _＝₁_)
+      open EqualityCombinator Q σ₂ renaming (_＝ₛ_ to _＝₂_)
 
-      bar : {!!}
-      bar = ♠₂ i (pr₂ ∘ 𝒿)
+      𝒿₁ = pr₁ ∘ 𝒿
+      𝒿₂ = pr₂ ∘ 𝒿
+
+      ♥₁ : (!∃ p ∶ P , Ɐ s ∶ index (𝒥 [ i ]) , p ·₁ (𝒥 [ i ] [ s ]) ＝₁ 𝒿₁ s) holds
+      ♥₁ = ♠₁ i (pr₁ ∘ 𝒿)
+
+      p : P
+      p = pr₁ (center ♥₁)
+
+      ♥₂ : (!∃ q ∶ Q , Ɐ s ∶ index (𝒥 [ i ]) , q ·₂ (𝒥 [ i ] [ s ]) ＝₂ 𝒿₂ s) holds
+      ♥₂ = ♠₂ i (pr₂ ∘ 𝒿)
+
+      q : Q
+      q = pr₁ (center ♥₂)
+
+      φ₁ : (s : index (𝒥 [ i ])) → p ·₁ (𝒥 [ i ] [ s ]) ＝ 𝒿₁ s
+      φ₁ = pr₂ (pr₁ ♥₁)
+
+      φ₂ : (s : index (𝒥 [ i ])) → q ·₂ (𝒥 [ i ] [ s ]) ＝ 𝒿₂ s
+      φ₂ = pr₂ (pr₁ ♥₂)
+
+      φ : (s : index (𝒥 [ i ])) → ((p , q) ∙× (𝒥 [ i ] [ s ])) ＝ 𝒿₁ s , 𝒿₂ s
+      φ s = to-×-＝ (φ₁ s) (φ₂ s)
+
+      ψ : is-central
+           (Σ (p , q) ꞉ (P × Q) ,
+             ((s : index (𝒥 [ i ])) → (p , q) ∙× (𝒥 [ i ] [ s ]) ＝ 𝒿 s))
+           ((p , q) , φ)
+      ψ ((p′ , q′) , φ′) = to-subtype-＝ ※ (to-×-＝ †₁ †₂)
+        where
+         φ′₁ : (s : index (𝒥 [ i ])) → p′ ·₁ (𝒥 [ i ] [ s ]) ＝ 𝒿₁ s
+         φ′₁ s = pr₁ (from-×-＝' (φ′ s))
+
+         φ′₂ : (s : index (𝒥 [ i ])) → q′ ·₂ (𝒥 [ i ] [ s ]) ＝ 𝒿₂ s
+         φ′₂ s = pr₂ (from-×-＝' (φ′ s))
+
+         ξ₁ : p , φ₁ ＝ p′ , φ′₁
+         ξ₁ = centrality ♥₁ (p′ , φ′₁)
+
+         †₁ : p ＝ p′
+         †₁ = pr₁ (from-Σ-＝ ξ₁)
+
+         ξ₂ : q , φ₂ ＝ q′ , φ′₂
+         ξ₂ = centrality ♥₂ (q′ , φ′₂)
+
+         †₂ : q ＝ q′
+         †₂ = pr₁ (from-Σ-＝ ξ₂)
+
+         ※ : (r : P × Q)
+           → is-prop ((s : index (𝒥 [ i ])) → (r ∙× ((𝒥 [ i ]) [ s ])) ＝ 𝒿 s)
+         ※ r = Π-is-prop fe (λ _ → ×-is-set σ₁ σ₂)
 
 \end{code}
