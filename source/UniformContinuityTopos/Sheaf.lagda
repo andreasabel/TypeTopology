@@ -101,3 +101,47 @@ The terminal sheaf
      † _ = refl
 
 \end{code}
+
+The product of two sheaves
+
+\begin{code}
+
+ _×ₛ_ : Sheaf → Sheaf → Sheaf
+ (𝒫@((P , σ₁) , (_·₁_ , _)) , _) ×ₛ (𝒬@((Q , σ₂) , (_·₂_ , _)) , _) = ℛ , ♠
+   where
+    _∙×_ : P × Q → ⟪ M ⟫ → P × Q
+    ((p , q) ∙× t) = p ·₁ t , q ·₂ t
+
+    γ : is-[ M ]-action (×-is-set σ₁ σ₂) _∙×_ holds
+    γ = (λ { (p , q) → γ₁ p q }) , γ₂
+     where
+      γ₁ : (p : P) (q : Q) → (p , q) ∙× ε[ M ] ＝ (p , q)
+      γ₁ p q = (p , q) ∙× ε[ M ]                ＝⟨ refl ⟩
+               (p ·₁ ε[ M ]) , (q ·₂ ε[ M ])    ＝⟨ †    ⟩
+               p , (q ·₂ ε[ M ])                ＝⟨ ‡    ⟩
+               p , q                            ∎
+                where
+                 † = ap (_, (q ·₂ ε[ M ])) (action-preserves-unit M 𝒫 p)
+                 ‡ = ap (p ,_) (action-preserves-unit M 𝒬 q)
+
+      γ₂ : (r : P × Q) (u v : ⟪ M ⟫) → r ∙× (u *[ M ] v) ＝ (r ∙× u) ∙× v
+      γ₂ (p , q) u v =
+       (p , q) ∙× (u *[ M ] v)                 ＝⟨ refl ⟩
+       p ·₁ (u *[ M ] v) , q ·₂ (u *[ M ] v)   ＝⟨ †    ⟩
+       (p ·₁ u) ·₁ v , q ·₂ (u *[ M ] v)       ＝⟨ ‡    ⟩
+       (p ·₁ u) ·₁ v , (q ·₂ u) ·₂ v           ＝⟨ refl ⟩
+       ((p , q) ∙× u) ∙× v                     ∎
+        where
+         † = ap (_, q ·₂ (u *[ M ] v)) (actions-are-functorial M 𝒫 p u v)
+         ‡ = ap ((p ·₁ u) ·₁ v ,_) (actions-are-functorial M 𝒬 q u v)
+
+    𝒶 : [ M ]-action-on ((P × Q) , ×-is-set σ₁ σ₂)
+    𝒶 = _∙×_ , γ
+
+    ℛ : [ M ]-set
+    ℛ = ((P × Q) , ×-is-set σ₁ σ₂) , 𝒶
+
+    ♠ : is-sheaf ℛ holds
+    ♠ i 𝒿 = ({!!} , {!!}) , {!!}
+
+\end{code}
