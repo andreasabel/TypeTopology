@@ -22,6 +22,7 @@ open import UF.Subsingleton-Combinators
 open AllCombinators pt fe
 
 open import UniformContinuityTopos.Coverage pt fe M
+open import UniformContinuityTopos.SubobjectClassifier pt fe M
 
 \end{code}
 
@@ -32,6 +33,7 @@ open import UniformContinuityTopos.Sheaf pt fe M
 module DefnOfInternalLanguage (𝒸ℴ𝓋 : Coverage 𝓦) where
 
  open DefnOfSheaf 𝒸ℴ𝓋
+ open DefnOfΩ 𝒸ℴ𝓋
 
  𝒯𝓎𝓅ℯ : 𝓤 ⁺ ⊔ 𝓦  ̇
  𝒯𝓎𝓅ℯ = Sheaf
@@ -58,7 +60,8 @@ module DefnOfInternalLanguage (𝒸ℴ𝓋 : Coverage 𝓦) where
  data _⊢_ : 𝒞𝓉𝓍 → 𝒯𝓎𝓅ℯ → (𝓤 ⁺) ⊔ 𝓦  ̇ where
   var  : Γ ∋ X → Γ ⊢ X
   _,ᵢ_ : Γ ⊢ X → Γ ⊢ Y → Γ ⊢ (X ×ₛ Y)
-  _∘ᵢ_ : Γ ⊢ X → (Γ ⌢ X) ⊢ Y → Γ ⊢ Y
+  _∘ᵢ_ : ℋℴ𝓂 X Y → Γ ⊢ X → Γ ⊢ Y
+  _≡ᵢ_ : Γ ⊢ X → Γ ⊢ Y → Γ ⊢ Ωₛ
 
  mutual
 
@@ -68,15 +71,16 @@ module DefnOfInternalLanguage (𝒸ℴ𝓋 : Coverage 𝓦) where
 
   ⟦_⟧ₓ : Γ ∋ X → ℋℴ𝓂 ⟦ Γ ⟧ₜ X
   ⟦_⟧ₓ {Γ ⌢ X} {X} here      = π₂ ⟦ Γ ⟧ₜ X
-  ⟦_⟧ₓ {Γ ⌢ Y} {X} (there p) = {!!}
+  ⟦_⟧ₓ {Γ ⌢ Y} {X} (there p) = comp ⟦ Γ ⌢ Y ⟧ₜ ⟦ Γ ⟧ₜ X ⟦ p ⟧ₓ (π₁ ⟦ Γ ⟧ₜ Y)
 
   𝓉𝓎𝓅ℯ-ℴ𝒻 : Γ ⊢ X → 𝒯𝓎𝓅ℯ
   𝓉𝓎𝓅ℯ-ℴ𝒻 {_} {X} t = X
 
 
   ⟦_⟧ : Γ ⊢ X → ℋℴ𝓂 ⟦ Γ ⟧ₜ X
-  ⟦_⟧ {Γ} (var i)        = ⟦ i ⟧ₓ
-  ⟦_⟧ {Γ} {X} (t₁ ,ᵢ t₂) = pair ⟦ Γ ⟧ₜ (𝓉𝓎𝓅ℯ-ℴ𝒻 t₁) (𝓉𝓎𝓅ℯ-ℴ𝒻 t₂) ⟦ t₁ ⟧ ⟦ t₂ ⟧
-  ⟦_⟧ {Γ} {X} (t₁ ∘ᵢ t₂) = comp ⟦ Γ ⟧ₜ (𝓉𝓎𝓅ℯ-ℴ𝒻 t₁) (𝓉𝓎𝓅ℯ-ℴ𝒻 t₂) {!!} ⟦ t₁ ⟧
+  ⟦_⟧ {Γ}     (var i)            = ⟦ i ⟧ₓ
+  ⟦_⟧ {Γ}     (t₁ ,ᵢ t₂)         = pair ⟦ Γ ⟧ₜ (𝓉𝓎𝓅ℯ-ℴ𝒻 t₁) (𝓉𝓎𝓅ℯ-ℴ𝒻 t₂) ⟦ t₁ ⟧ ⟦ t₂ ⟧
+  ⟦_⟧ {Γ} {X} (_∘ᵢ_ {Z} {X} f t) = comp ⟦ Γ ⟧ₜ Z X f ⟦ t ⟧
+  ⟦_⟧ {Γ} {X} (t₁ ≡ᵢ t₂)         = {!!}
 
 \end{code}
