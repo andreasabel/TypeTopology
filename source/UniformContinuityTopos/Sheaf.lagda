@@ -75,6 +75,9 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
  apply : (𝒫 𝒬 : Sheaf) → ℋℴ𝓂 𝒫 𝒬 → ¡ P[ 𝒫 ] ¡ → ¡ P[ 𝒬 ] ¡
  apply 𝒫 𝒬 (𝒻 , _) = 𝒻
 
+ ∣_∣ₛ : Sheaf → 𝓤  ̇
+ ∣ S ∣ₛ = ¡ P[ S ] ¡
+
 \end{code}
 
 The identity natural transformation:
@@ -83,6 +86,30 @@ The identity natural transformation:
 
  𝟏[_] : (P : Sheaf) → ℋℴ𝓂 P P
  𝟏[ P ] = id , λ _ _ → refl
+
+\end{code}
+
+Composition of natural transformations:
+
+\begin{code}
+
+ ∘-is-natural : (𝒫 𝒬 ℛ : Sheaf) (ϕ : ∣ 𝒫 ∣ₛ → ∣ 𝒬 ∣ₛ) (ψ : ∣ 𝒬 ∣ₛ → ∣ ℛ ∣ₛ)
+              → is-natural′ 𝒫 𝒬 ϕ holds
+              → is-natural′ 𝒬 ℛ ψ holds
+              → is-natural′ 𝒫 ℛ (ψ ∘ ϕ) holds
+ ∘-is-natural 𝒫 𝒬 ℛ ϕ ψ β γ p u = ψ (ϕ (p ·₁ u))     ＝⟨ ap ψ (β p u) ⟩
+                                  ψ (ϕ p ·₂ u)       ＝⟨ γ (ϕ p) u    ⟩
+                                  ψ (ϕ p) ·₃ u       ∎
+   where
+    _·₁_ = μ M P[ 𝒫 ]
+    _·₂_ = μ M P[ 𝒬 ]
+    _·₃_ = μ M P[ ℛ ]
+
+ comp : (𝒫 𝒬 ℛ : Sheaf) → ℋℴ𝓂 𝒬 ℛ → ℋℴ𝓂 𝒫 𝒬 → ℋℴ𝓂 𝒫 ℛ
+ comp 𝒫 𝒬 ℛ (ψ , ν₂) (ϕ , ν₁) = (ψ ∘ ϕ) , χ
+  where
+   χ : is-natural′ 𝒫 ℛ (ψ ∘ ϕ) holds
+   χ = ∘-is-natural 𝒫 𝒬 ℛ ϕ ψ ν₁ ν₂
 
 \end{code}
 
@@ -208,7 +235,7 @@ The product of two sheaves
 
 \end{code}
 
-The projection morphisms
+Projection and pairing morphisms
 
 \begin{code}
 

@@ -77,7 +77,8 @@ action-preserves-unit : (M : Monoid {𝓤}) → (P : [ M ]-set) → (x : carrier
 action-preserves-unit M (P , _ , (p , _)) = p
 
 actions-are-functorial : (M : Monoid {𝓤}) (𝒫 : [ M ]-set)
-                       → (x : carrier M 𝒫) (u v : ⟪ M ⟫) → μ M 𝒫 x (u *[ M ] v) ＝ μ M 𝒫 (μ M 𝒫 x u) v
+                       → (x : carrier M 𝒫) (u v : ⟪ M ⟫)
+                       → μ M 𝒫 x (u *[ M ] v) ＝ μ M 𝒫 (μ M 𝒫 x u) v
 actions-are-functorial M (P , _ , (_ , q)) = q
 
 \end{code}
