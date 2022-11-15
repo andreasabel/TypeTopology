@@ -9,7 +9,10 @@ for file in `ls *.lagda`; do
     cat $file | ./markdownify.sh > $(basename $file .lagda).lagda.md
 done
 
-./hide_lagda.sh
+for file in `ls *.lagda`; do
+	echo "Hiding $file..."
+	mv $file ".$file"
+done
 
 agda --html --html-highlight=auto --css="Agda.css" UniformContinuityMonoid.lagda.md
 agda --html --html-highlight=auto --css="Agda.css" Sheaf.lagda.md
@@ -28,6 +31,9 @@ done
 
 cd ..
 
-./unhide_lagda.sh
+for file in `ls -d .* | grep lagda`; do
+	echo "Unhiding $file..."
+	mv $file $(echo $file | cut -c 2-)
+done
 
 rm -rf *.lagda.md
