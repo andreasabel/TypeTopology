@@ -47,6 +47,9 @@ syntax monoid-op-syntax M x y = x *[ M ] y
 ε[_]-is-right-unit : (M : Monoid {𝓤}) (x : ⟪ M ⟫) → x *[ M ] ε[ M ] ＝ x
 ε[_]-is-right-unit (_ , _ , (_ , _ , q , r)) = q
 
+*[_]-is-associative : (M : Monoid {𝓤}) → (x y z : ⟪ M ⟫) → (x *[ M ] y) *[ M ] z ＝ x *[ M ] (y *[ M ] z)
+*[_]-is-associative M x y z = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ M)))) x y z
+
 monoid-carrier-is-set : (M : Monoid {𝓤}) → is-set ⟪ M ⟫
 monoid-carrier-is-set (_ , _ , (σ , _)) = σ
 
