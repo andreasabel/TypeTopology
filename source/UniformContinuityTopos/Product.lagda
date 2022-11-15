@@ -1,3 +1,8 @@
+---
+title: Binary Product of Sheaves
+author: Ayberk Tosun
+---
+
 \begin{code}
 
 open import MLTT.Spartan
