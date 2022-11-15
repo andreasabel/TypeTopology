@@ -155,12 +155,12 @@ pre code, textarea, div.string {
 }
 
 pre.Agda {
-  font-family: 'PragmataPro Mono Liga', monospace;
+  font-family: 'Fira Mono', monospace;
   line-height: 120%;
 }
 
 pre.normal, pre.normal code, code, .error, input {
-  font-family: 'PragmataPro Mono Liga', monospace;
+  font-family: 'Fira Mono', monospace;
 }
 
 
