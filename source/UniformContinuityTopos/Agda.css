@@ -6,6 +6,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import 'https://fonts.googleapis.com/css2?family=Martel&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Martel:wght@700&display=swap';
 
 @font-face {
   font-family: "PragmataPro Mono Liga";
@@ -49,9 +51,10 @@ a[href]:hover { background-color: #B4EEB4 }
 /* padding */
 
 body {
+  font-family: 'Martel';
   margin: auto;
   padding: 1em 1em 1em 1em;
-  max-width: 50em; 
+  max-width: 50em;
   line-height: 130%;
   background-color: white;
   color: black;
@@ -62,6 +65,7 @@ h1 {
 }
 
 h2 {
+  font-size: 16px;
   padding-top: 1em;
 }
 
@@ -146,7 +150,7 @@ h1, h2, h3 {
 }
 
 pre code, textarea, div.string {
-  font-family: 'PragmataPro Mono Liga', monospace;
+  font-family: 'Fira Mono', monospace;
   font-size: 100;
 }
 
