@@ -26,7 +26,7 @@ echo "Running pandoc..."
 cd html
 
 for file in `ls *.md`; do
-	cat $file | pandoc -s --from=markdown --to=html --css Agda.css --toc -o "$(basename $file).html"
+	cat $file | pandoc -s --from=markdown --to=html --css Agda.css --toc -o "$(basename -s '.md' $file).html"
 done
 
 cd ..

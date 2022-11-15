@@ -7,7 +7,9 @@ for line in fileinput.input():
     elif line.startswith("\\end{code}"):
         print("```")
     elif line.startswith("\\section{"):
-        m = re.match(r"\\section{([^A-Za-z0-9 ]+)}", line)
-        print("## {}".format(m.groups()[0]))
+        m = re.match(r"\\section{([A-Za-z0-9]+)}", line)
+        if m:
+            groups = m.groups()
+            print("## {}".format(groups[0]))
     else:
         print(line, end="")
