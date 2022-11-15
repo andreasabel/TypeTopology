@@ -1,12 +1,10 @@
 #!/bin/bash
 
-echo "Running Agda..."
-
 echo "Running markdownify.sh"
 
 for file in `ls *.lagda`; do
     echo "Writing $(basename $file .lagda).lagda.md..."
-    cat $file | ./markdownify.sh > $(basename $file .lagda).lagda.md
+    cat $file | python3 markdownify.py > $(basename $file .lagda).lagda.md
 done
 
 for file in `ls *.lagda`; do
@@ -16,12 +14,14 @@ done
 
 agda --html --html-highlight=auto --css="Agda.css" UniformContinuityMonoid.lagda.md
 agda --html --html-highlight=auto --css="Agda.css" Sheaf.lagda.md
-
-echo "Running pandoc..."
+agda --html --html-highlight=auto --css="Agda.css" Product.lagda.md
 
 echo "Copying Agda.css into `html`..."
 
 cp Agda.css html/Agda.css
+
+echo "Running pandoc..."
+
 
 cd html
 
