@@ -1,5 +1,6 @@
 \begin{code}
 
+
 open import MLTT.Spartan
 open import UF.Base
 open import UF.PropTrunc
@@ -27,6 +28,7 @@ open import UniformContinuityTopos.Vector
 open import UniformContinuityTopos.MonoidAction fe
 open import UniformContinuityTopos.Coverage pt fe M
 open import UF.Subsingletons-FunExt
+open import UF.Retracts
 
 open PropositionalTruncation pt
 
@@ -77,6 +79,18 @@ module DefnOfSheaf (𝒸ℴ𝓋 : Coverage 𝓦) where
 
  ∣_∣ₛ : Sheaf → 𝓤  ̇
  ∣ S ∣ₛ = ¡ P[ S ] ¡
+
+ sheaf-is-set : (𝒫 : Sheaf) → is-set ∣ 𝒫 ∣ₛ
+ sheaf-is-set (((P , σ) , _) , _) = σ
+
+ ℋℴ𝓂-is-set : (𝒫 𝒬 : Sheaf) → is-set (ℋℴ𝓂 𝒫 𝒬)
+ ℋℴ𝓂-is-set 𝒫 𝒬 =
+  Σ-is-set
+   (Π-is-set fe λ _ → sheaf-is-set 𝒬)
+   λ f → props-are-sets (holds-is-prop (is-natural′ 𝒫 𝒬 f))
+
+ ℋℴ𝓂ₛ : Sheaf → Sheaf → hSet 𝓤
+ ℋℴ𝓂ₛ 𝒫 𝒬 = ℋℴ𝓂 𝒫 𝒬 , ℋℴ𝓂-is-set 𝒫 𝒬
 
 \end{code}
 
@@ -133,5 +147,15 @@ The terminal sheaf
     where
      † : (Ɐ s ∶ index (𝒥 [ i ]) , ⋆ ＝ₛ ⋆) holds
      † _ = refl
+
+\end{code}
+
+\begin{code}
+
+ -- self-action-is-sheaf : is-sheaf (self-action M) holds
+ -- self-action-is-sheaf i 𝒿 = (ε[ M ] , †) , {!!}
+ --  where
+ --   † : (j : index (𝒥 [ i ])) → ε[ M ] *[ M ] (𝒥 [ i ] [ j ]) ＝ 𝒿 j
+ --   † j = {!!}
 
 \end{code}
