@@ -14,7 +14,6 @@ open monoid
 module UniformContinuityTopos.UCSheaf
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
-        (M   : Monoid {𝓤})
         where
 
 open import UF.Subsingletons
@@ -25,7 +24,7 @@ open AllCombinators pt fe
 open import UniformContinuityTopos.UniformContinuityMonoid pt fe
 open import UniformContinuityTopos.Vector
 open import UniformContinuityTopos.MonoidAction fe
-open import UniformContinuityTopos.Coverage pt fe M
+open import UniformContinuityTopos.Coverage pt fe ℂ
 open import UniformContinuityTopos.Sheaf pt fe ℂ
 
 open PropositionalTruncation pt
@@ -41,5 +40,9 @@ is-uc-sheaf = {!!}
 
 UCSheaf : {!!}
 UCSheaf = {!!}
+
+self-action-is-sheaf′ : is-sheaf (self-action ℂ) holds
+self-action-is-sheaf′ = ?
+
 
 \end{code}
