@@ -29,6 +29,8 @@ open import UniformContinuityTopos.Sheaf pt fe ℂ
 
 open PropositionalTruncation pt
 
+open DefnOfSheaf
+
 \end{code}
 
 \section{Definition of sheaf over the UC site}

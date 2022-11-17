@@ -94,7 +94,7 @@ open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
         s′ = take m (t (cons s (λ _ → ₀)))
 
         ॐ : (α : Cantor) (i : ℕ) → t (cons s α) i ＝ cons s′ (drop m (t (cons s α))) i
-        ॐ α i  = {!!}
+        ॐ α i  = {!!} ϝ
 
         ※ : (𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ (𝔡𝔯𝔬𝔭 m ⊚ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s)) holds
         ※ = UC-Endomap-extensional-equality λ α → dfunext fe (ॐ α)
