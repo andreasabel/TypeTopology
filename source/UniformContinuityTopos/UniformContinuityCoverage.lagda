@@ -6,6 +6,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
+open import MLTT.Fin
 
 module UniformContinuityTopos.UniformContinuityCoverage
         (pt : propositional-truncations-exist)
@@ -80,6 +81,22 @@ open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
           t ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ t′
 
   † : Ψ holds
-  † t m = {!!}
+  † 𝓉@(t , ζ) m = ∥∥-rec ∃-is-prop γ (ζ m)
+   where
+    γ : Σ n₀ ꞉ ℕ , (Ɐ α , Ɐ β , α ＝⟦ n₀ ⟧ β ⇒ t α ＝⟦ m ⟧ t β) holds
+      → (Ǝ̃ n ∶ ℕ , Ɐ s ∶ Vec 𝟚 n , Ǝ̃ 𝓉′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m , 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ 𝓉′) holds
+    γ (n₀ , ϡ) = ∣ n₀ , ♠ ∣
+     where
+      ♠ : (s : Vec 𝟚 n) → (Ǝ̃ 𝓉′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m , 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ 𝓉′) holds
+      ♠ s = ∣ 𝔡𝔯𝔬𝔭 m ⊚ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s , ∣ s′ , ※ ∣ ∣
+       where
+        s′ : Vec 𝟚 m
+        s′ = take m (t (cons s (λ _ → ₀)))
 
-\end{code}
+        ॐ : (α : Cantor) (i : ℕ) → t (cons s α) i ＝ cons s′ (drop m (t (cons s α))) i
+        ॐ α i  = {!!}
+
+        ※ : (𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ (𝔡𝔯𝔬𝔭 m ⊚ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s)) holds
+        ※ = UC-Endomap-extensional-equality λ α → dfunext fe (ॐ α)
+
+ \end{code}
