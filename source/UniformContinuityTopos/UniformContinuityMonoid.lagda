@@ -12,7 +12,7 @@ open import UF.PropTrunc
 open import UF.FunExt
 open import UF.Univalence
 open import UF.UA-FunExt
-open import MLTT.List hiding ([_])
+open import MLTT.List hiding ([_]; _∷_)
 
 module UniformContinuityTopos.UniformContinuityMonoid
         (pt : propositional-truncations-exist)
@@ -25,6 +25,7 @@ open import UF.Retracts
 open import UF.Subsingletons-FunExt
 open import UF.Subsingleton-Combinators
 open import UF.SIP-Examples
+open import UniformContinuityTopos.Vector
 
 open PropositionalTruncation pt
 
@@ -163,6 +164,8 @@ We can now define a composition operator on the type `UC-Endomap` directly:
 
 \begin{code}
 
+infixl 12 _⊚_
+
 _⊚_ : UC-Endomap → UC-Endomap → UC-Endomap
 (t₂ , ζ₂) ⊚ (t₁ , ζ₁) = t₂ ∘ t₁ , ∘-is-uniformly-continuous t₁ t₂ ζ₁ ζ₂
 
@@ -203,5 +206,40 @@ Cantor space:
 
 ℂ : Monoid
 ℂ = UC-Endomap , ℂ-monoid-structure , ℂ-satisfies-monoid-axioms
+
+\end{code}
+
+\section{Some operations on the Cantor space}
+
+\begin{code}
+
+take : (n : ℕ) → Cantor → Vec 𝟚 n
+take zero     α = []
+take (succ n) α = α n ∷ take n α
+
+tail-is-uniformly-continuous : is-uniformly-continuous tail holds
+tail-is-uniformly-continuous zero     = ∣ 0             , (λ _ _ _ → ⋆) ∣
+tail-is-uniformly-continuous (succ m) = ∣ succ (succ m) , ζ (succ m)    ∣
+ where
+  ζ : (n : ℕ) (α β : Cantor) → (α ＝⟦ succ n ⟧ β ⇒ tail α ＝⟦ n ⟧ tail β) holds
+  ζ n α β (p , q) = q
+
+𝔱𝔞𝔦𝔩 : UC-Endomap
+𝔱𝔞𝔦𝔩 = tail , tail-is-uniformly-continuous
+
+drop : ℕ → Cantor → Cantor
+drop zero     = id
+drop (succ n) = drop n ∘ tail
+
+drop-is-uniformly-continuous : (n : ℕ) → is-uniformly-continuous (drop n) holds
+drop-is-uniformly-continuous zero     = id-is-uniformly-continuous
+drop-is-uniformly-continuous (succ n) =
+ ∘-is-uniformly-continuous tail (drop n) tail-is-uniformly-continuous ℐℋ
+  where
+   ℐℋ : is-uniformly-continuous (drop n) holds
+   ℐℋ = drop-is-uniformly-continuous n
+
+𝔡𝔯𝔬𝔭 : ℕ → UC-Endomap
+𝔡𝔯𝔬𝔭 n = drop n , drop-is-uniformly-continuous n
 
 \end{code}
