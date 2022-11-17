@@ -23,6 +23,7 @@ open AllCombinators pt fe
 
 open import UniformContinuityTopos.Coverage pt fe M
 open import UniformContinuityTopos.SubobjectClassifier pt fe M
+open import UniformContinuityTopos.Product pt fe M
 
 \end{code}
 
@@ -33,6 +34,7 @@ open import UniformContinuityTopos.Sheaf pt fe M
 module DefnOfInternalLanguage (𝒸ℴ𝓋 : Coverage 𝓦) where
 
  open DefnOfSheaf 𝒸ℴ𝓋
+ open DefnOfProduct 𝒸ℴ𝓋
  open DefnOfΩ 𝒸ℴ𝓋
 
  𝒯𝓎𝓅ℯ : 𝓤 ⁺ ⊔ 𝓦  ̇
@@ -61,7 +63,7 @@ module DefnOfInternalLanguage (𝒸ℴ𝓋 : Coverage 𝓦) where
   var  : Γ ∋ X → Γ ⊢ X
   _,ᵢ_ : Γ ⊢ X → Γ ⊢ Y → Γ ⊢ (X ×ₛ Y)
   _∘ᵢ_ : ℋℴ𝓂 X Y → Γ ⊢ X → Γ ⊢ Y
-  _≡ᵢ_ : Γ ⊢ X → Γ ⊢ Y → Γ ⊢ Ωₛ
+  _≡ᵢ_ : Γ ⊢ X → Γ ⊢ X → Γ ⊢ Ωₛ
 
  mutual
 
