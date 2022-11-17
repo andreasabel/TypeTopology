@@ -85,3 +85,22 @@ actions-are-functorial : (M : Monoid {𝓤}) (𝒫 : [ M ]-set)
 actions-are-functorial M (P , _ , (_ , q)) = q
 
 \end{code}
+
+\begin{code}
+
+self-action : (M : Monoid {𝓤}) → [ M ]-set
+self-action M = (⟪ M ⟫ , monoid-carrier-is-set M) , _·_ , †
+ where
+  _·_ : ⟪ M ⟫ → ⟪ M ⟫ → ⟪ M ⟫
+  u · v = u *[ M ] v
+
+  † : is-[ M ]-action (monoid-carrier-is-set M) _·_ holds
+  † = β , γ
+   where
+    β : (u : ⟪ M ⟫) → u · ε[ M ] ＝ u
+    β = ε[ M ]-is-right-unit
+
+    γ : (u v w : ⟪ M ⟫) → u · (v · w) ＝ (u · v) · w
+    γ u v w = *[ M ]-is-associative u v w ⁻¹
+
+\end{code}
