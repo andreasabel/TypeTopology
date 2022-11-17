@@ -70,6 +70,57 @@ cons-uniformly-continuous (b ∷ b⃗) =
 
 open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
 
+＝⟦⟧-lemma : {n : ℕ} (s : Vec 𝟚 n) (α β : Cantor) → (cons s α ＝⟦ n ⟧ cons s β) holds
+＝⟦⟧-lemma []      α β = ⋆
+＝⟦⟧-lemma (b ∷ s) α β = refl , ＝⟦⟧-lemma s α β
+
+take-＝-lemma : (n : ℕ) (α β : Cantor)
+              → (α ＝⟦ n ⟧ β) holds → take n α ＝ take n β
+take-＝-lemma zero     α β _       = refl
+take-＝-lemma (succ n) α β (p , q) =
+ take (succ n) α       ＝⟨ refl ⟩
+ α 0 ∷ take n (tail α) ＝⟨ †    ⟩
+ β 0 ∷ take n (tail α) ＝⟨ ‡    ⟩
+ β 0 ∷ take n (tail β) ＝⟨ refl ⟩
+ take (succ n) β       ∎
+  where
+   † = ap (λ - → - ∷ take n (tail α)) p
+   ‡ = ap (λ - → β 0 ∷ -) (take-＝-lemma n (tail α) (tail β) q)
+
+＝-take-lemma : (n : ℕ) (α β : Cantor)
+              → take n α ＝ take n β → (α ＝⟦ n ⟧ β) holds
+＝-take-lemma zero     α β p = ⋆
+＝-take-lemma (succ n) α β p = † , ‡
+ where
+  foo : α 0 ∷ take n (tail α) ＝ β 0 ∷ take n (tail β)
+  foo = p
+
+  † : α 0 ＝ β 0
+  † = ∷-eq-lemma₁ foo
+
+  ※ : take n (tail α) ＝ take n (tail β)
+  ※ = ∷-eq-lemma₂ foo
+
+  ‡ : (tail α ＝⟦ n ⟧ tail β) holds
+  ‡ = ＝-take-lemma n (tail α) (tail β) ※
+
+cons-bit-tail-lemma : (α : Cantor) → cons-bit (α 0) (tail α) ＝ α
+cons-bit-tail-lemma α = dfunext fe (λ { zero → refl ; (succ _) → refl })
+
+take-drop-lemma : (n : ℕ) (α : Cantor) → cons (take n α) (drop n α) ＝ α
+take-drop-lemma zero     α = refl
+take-drop-lemma (succ n) α =
+ cons (take (succ n) α)                 (drop (succ n) α)   ＝⟨ refl  ⟩
+ cons (take (succ n) α)                 (drop n (tail α))   ＝⟨ refl  ⟩
+ cons (α 0 ∷ take n (tail α))           (drop n (tail α))   ＝⟨ refl  ⟩
+ cons-bit (α 0) (cons (take n (tail α)) (drop n (tail α)))  ＝⟨ †     ⟩
+ cons-bit (α 0) (tail α)                                    ＝⟨ ‡     ⟩
+ α                                                          ∎
+  where
+   ℐℋ = take-drop-lemma n (tail α)
+   †  = ap (cons-bit (α 0)) ℐℋ
+   ‡  = cons-bit-tail-lemma α
+
 𝒥-is-coverage : is-coverage 𝒥 holds
 𝒥-is-coverage = †
  where
@@ -84,19 +135,34 @@ open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
   † 𝓉@(t , ζ) m = ∥∥-rec ∃-is-prop γ (ζ m)
    where
     γ : Σ n₀ ꞉ ℕ , (Ɐ α , Ɐ β , α ＝⟦ n₀ ⟧ β ⇒ t α ＝⟦ m ⟧ t β) holds
-      → (Ǝ̃ n ∶ ℕ , Ɐ s ∶ Vec 𝟚 n , Ǝ̃ 𝓉′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m , 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ 𝓉′) holds
+      → (Ǝ̃ n ∶ ℕ , Ɐ s ∶ Vec 𝟚 n ,
+          Ǝ̃ 𝓉′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m , 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ 𝓉′) holds
     γ (n₀ , ϡ) = ∣ n₀ , ♠ ∣
      where
-      ♠ : (s : Vec 𝟚 n) → (Ǝ̃ 𝓉′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m , 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ 𝓉′) holds
+      ♠ : (s : Vec 𝟚 n₀)
+        → (Ǝ̃ 𝓉′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m , 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ 𝓉′) holds
       ♠ s = ∣ 𝔡𝔯𝔬𝔭 m ⊚ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s , ∣ s′ , ※ ∣ ∣
        where
         s′ : Vec 𝟚 m
         s′ = take m (t (cons s (λ _ → ₀)))
 
-        ॐ : (α : Cantor) (i : ℕ) → t (cons s α) i ＝ cons s′ (drop m (t (cons s α))) i
-        ॐ α i  = {!!} ϝ
+        ॐ : (α : Cantor) → t (cons s α) ＝ cons s′ (drop m (t (cons s α)))
+        ॐ α =
+         t (cons s α)                                                  ＝⟨ I    ⟩
+         cons (take m (t (cons s α))) (drop m (t (cons s α)))          ＝⟨ II   ⟩
+         cons (take m (t (cons s (λ _ → ₀)))) (drop m (t (cons s α)))  ＝⟨ refl ⟩
+         cons s′ (drop m (t (cons s α)))                               ∎
+         where
+          eq : (t (cons s (λ _ → ₀)) ＝⟦ m ⟧ t (cons s α)) holds
+          eq = ϡ (cons s (λ _ → ₀)) (cons s α) (＝⟦⟧-lemma s (λ _ → ₀) α)
+
+          eq′ : s′ ＝ take m (t (cons s α))
+          eq′ = take-＝-lemma m (t (cons s (λ _ → ₀))) (t (cons s α)) eq
+
+          I  = take-drop-lemma m (t (cons s α)) ⁻¹
+          II = ap (λ - → cons - (drop m (t (cons s α)))) (eq′ ⁻¹)
 
         ※ : (𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ (𝔡𝔯𝔬𝔭 m ⊚ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s)) holds
-        ※ = UC-Endomap-extensional-equality λ α → dfunext fe (ॐ α)
+        ※ = UC-Endomap-extensional-equality ॐ
 
  \end{code}

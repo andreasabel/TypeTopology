@@ -215,7 +215,7 @@ Cantor space:
 
 take : (n : ℕ) → Cantor → Vec 𝟚 n
 take zero     α = []
-take (succ n) α = α n ∷ take n α
+take (succ n) α = α 0 ∷ take n (tail α)
 
 tail-is-uniformly-continuous : is-uniformly-continuous tail holds
 tail-is-uniformly-continuous zero     = ∣ 0             , (λ _ _ _ → ⋆) ∣
