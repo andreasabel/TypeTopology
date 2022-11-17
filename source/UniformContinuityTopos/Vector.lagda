@@ -1,5 +1,7 @@
 \begin{code}
 
+{-# OPTIONS --without-K --safe #-}
+
 open import MLTT.Spartan
 
 module UniformContinuityTopos.Vector where
