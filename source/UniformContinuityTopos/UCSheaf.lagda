@@ -37,14 +37,4 @@ open DefnOfSheaf
 
 \begin{code}
 
-is-uc-sheaf : [ ℂ ]-set → Ω {!!}
-is-uc-sheaf = {!!}
-
-UCSheaf : {!!}
-UCSheaf = {!!}
-
-self-action-is-sheaf′ : is-sheaf (self-action ℂ) holds
-self-action-is-sheaf′ = ?
-
-
 \end{code}
