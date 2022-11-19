@@ -165,4 +165,7 @@ take-drop-lemma (succ n) α =
         ※ : (𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ (𝔡𝔯𝔬𝔭 m ⊚ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s)) holds
         ※ = UC-Endomap-extensional-equality ॐ
 
- \end{code}
+UC-coverage : Coverage 𝓤₀
+UC-coverage = 𝒥 , 𝒥-is-coverage
+
+\end{code}
