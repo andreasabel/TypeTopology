@@ -47,7 +47,9 @@ syntax monoid-op-syntax M x y = x *[ M ] y
 ε[_]-is-right-unit : (M : Monoid {𝓤}) (x : ⟪ M ⟫) → x *[ M ] ε[ M ] ＝ x
 ε[_]-is-right-unit (_ , _ , (_ , _ , q , r)) = q
 
-*[_]-is-associative : (M : Monoid {𝓤}) → (x y z : ⟪ M ⟫) → (x *[ M ] y) *[ M ] z ＝ x *[ M ] (y *[ M ] z)
+*[_]-is-associative : (M : Monoid {𝓤})
+                    → (x y z : ⟪ M ⟫)
+                    → (x *[ M ] y) *[ M ] z ＝ x *[ M ] (y *[ M ] z)
 *[_]-is-associative M x y z = pr₂ (pr₂ (pr₂ (pr₂ (pr₂ M)))) x y z
 
 monoid-carrier-is-set : (M : Monoid {𝓤}) → is-set ⟪ M ⟫
@@ -76,7 +78,8 @@ carrier M ((P , _) , _·_) = P
 μ : (M : Monoid {𝓤}) → (P : [ M ]-set 𝓥) → carrier M P → ⟪ M ⟫ → carrier M P
 μ M (P , _∙_ , _) = _∙_
 
-action-preserves-unit : (M : Monoid {𝓤}) → (P : [ M ]-set 𝓥) → (x : carrier M P) → μ M P x ε[ M ] ＝ x
+action-preserves-unit : (M : Monoid {𝓤}) (P : [ M ]-set 𝓥)
+                      → (x : carrier M P) → μ M P x ε[ M ] ＝ x
 action-preserves-unit M (P , _ , (p , _)) = p
 
 actions-are-functorial : (M : Monoid {𝓤}) (𝒫 : [ M ]-set 𝓥)
