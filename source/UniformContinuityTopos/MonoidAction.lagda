@@ -53,33 +53,33 @@ syntax monoid-op-syntax M x y = x *[ M ] y
 monoid-carrier-is-set : (M : Monoid {𝓤}) → is-set ⟪ M ⟫
 monoid-carrier-is-set (_ , _ , (σ , _)) = σ
 
-is-[_]-action : {A : 𝓤  ̇} (M : Monoid {𝓤}) → is-set A → (A → ⟪ M ⟫ → A) → Ω 𝓤
-is-[_]-action {𝓤} {A} M@(_ , (_*_ , ε) , _) σ _·_ = β ∧ γ
+is-[_]-action : {A : 𝓥  ̇} (M : Monoid {𝓤}) → is-set A → (A → ⟪ M ⟫ → A) → Ω (𝓥 ⊔ 𝓤)
+is-[_]-action {𝓥 = 𝓥} {𝓤} {A} M@(_ , (_*_ , ε) , _) σ _·_ = β ∧ γ
  where
   open EqualityCombinator A σ
 
-  β : Ω 𝓤
+  β : Ω 𝓥
   β = Ɐ x ∶ A , x · ε ＝ₛ x
 
-  γ : Ω 𝓤
+  γ : Ω (𝓤 ⊔ 𝓥)
   γ = Ɐ x ∶ A , Ɐ u ∶ ⟪ M ⟫ , Ɐ v ∶ ⟪ M ⟫ , x · (u * v) ＝ₛ (x · u) · v
 
-[_]-action-on : Monoid {𝓤} → hSet 𝓤 → 𝓤  ̇
+[_]-action-on : Monoid {𝓤} → hSet 𝓥 → 𝓤 ⊔ 𝓥  ̇
 [ M ]-action-on (A , σ) = Σ _·_ ꞉ (A → ⟪ M ⟫ → A) , (is-[ M ]-action σ _·_ holds)
 
-[_]-set : Monoid {𝓤} → 𝓤 ⁺  ̇
-[_]-set {𝓤} M = Σ A ꞉ hSet 𝓤 , [ M ]-action-on A
+[_]-set : Monoid {𝓤} → (𝓥 : Universe) → 𝓤 ⊔ 𝓥 ⁺  ̇
+[_]-set {𝓤} M 𝓥 = Σ A ꞉ hSet 𝓥 , [ M ]-action-on A
 
-carrier : (M : Monoid {𝓤}) → [ M ]-set → 𝓤  ̇
+carrier : (M : Monoid {𝓤}) → [ M ]-set 𝓥 → 𝓥  ̇
 carrier M ((P , _) , _·_) = P
 
-μ : (M : Monoid {𝓤}) → (P : [ M ]-set) → carrier M P → ⟪ M ⟫ → carrier M P
+μ : (M : Monoid {𝓤}) → (P : [ M ]-set 𝓥) → carrier M P → ⟪ M ⟫ → carrier M P
 μ M (P , _∙_ , _) = _∙_
 
-action-preserves-unit : (M : Monoid {𝓤}) → (P : [ M ]-set) → (x : carrier M P) → μ M P x ε[ M ] ＝ x
+action-preserves-unit : (M : Monoid {𝓤}) → (P : [ M ]-set 𝓥) → (x : carrier M P) → μ M P x ε[ M ] ＝ x
 action-preserves-unit M (P , _ , (p , _)) = p
 
-actions-are-functorial : (M : Monoid {𝓤}) (𝒫 : [ M ]-set)
+actions-are-functorial : (M : Monoid {𝓤}) (𝒫 : [ M ]-set 𝓥)
                        → (x : carrier M 𝒫) (u v : ⟪ M ⟫)
                        → μ M 𝒫 x (u *[ M ] v) ＝ μ M 𝒫 (μ M 𝒫 x u) v
 actions-are-functorial M (P , _ , (_ , q)) = q
@@ -88,7 +88,7 @@ actions-are-functorial M (P , _ , (_ , q)) = q
 
 \begin{code}
 
-self-action : (M : Monoid {𝓤}) → [ M ]-set
+self-action : (M : Monoid {𝓤}) → [ M ]-set 𝓤
 self-action M = (⟪ M ⟫ , monoid-carrier-is-set M) , _·_ , †
  where
   _·_ : ⟪ M ⟫ → ⟪ M ⟫ → ⟪ M ⟫
