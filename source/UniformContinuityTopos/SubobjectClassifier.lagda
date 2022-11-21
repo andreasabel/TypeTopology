@@ -25,8 +25,7 @@ open AllCombinators pt fe
 
 open import UniformContinuityTopos.Vector
 open import UniformContinuityTopos.MonoidAction fe
-open import UniformContinuityTopos.Coverage pt fe M
-open import UniformContinuityTopos.Sheaf pt fe M
+open import UniformContinuityTopos.Sheaf pt fe
 open import UF.Subsingletons-FunExt
 open import UF.Retracts
 open import UF.Powerset
@@ -37,9 +36,7 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-module DefnOfΩ (𝒸ℴ𝓋 : Coverage 𝓤) where
-
- open DefnOfSheaf 𝒸ℴ𝓋
+module DefnOfΩ where
 
  ℳ : hSet (𝓤 ⁺)
  ℳ = ⟪ M ⟫ , monoid-carrier-is-set M
@@ -59,17 +56,16 @@ module DefnOfΩ (𝒸ℴ𝓋 : Coverage 𝓤) where
  RightIdeal : 𝓤 ⁺  ̇
  RightIdeal = Σ S ꞉ Fam₀ 𝓤 ℳ , is-right-ideal S holds
 
- RightIdeal₀ : hSet (𝓤 ⁺)
- RightIdeal₀ = RightIdeal , †
-  where
-   † : is-set RightIdeal
-   † = Σ-is-set {!!} {!!}
+ -- RightIdeal₀ : hSet (𝓤 ⁺)
+ -- RightIdeal₀ = RightIdeal , †
+ --  where
+ --   † : is-set RightIdeal
+ --   † = Σ-is-set {!!} {!!}
 
- _·_ : RightIdeal → ⟪ M ⟫ → RightIdeal
- S · u = {!!}
+ -- _·_ : RightIdeal → ⟪ M ⟫ → RightIdeal
+ -- S · u = {!!}
 
  -- TODO: to be implemented.
- Ωₛ : Sheaf
- Ωₛ = (RightIdeal₀ , _·_ , {!!}) , {!!}
+ postulate Ωₛ : Sheaf 𝓤₁
 
 \end{code}
