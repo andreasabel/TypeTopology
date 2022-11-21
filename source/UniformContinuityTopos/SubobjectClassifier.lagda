@@ -15,7 +15,6 @@ open monoid
 module UniformContinuityTopos.SubobjectClassifier
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
-        (M   : Monoid {𝓤 ⁺})
         where
 
 open import UF.Subsingletons
@@ -24,6 +23,8 @@ open import UF.Subsingleton-Combinators
 open AllCombinators pt fe
 
 open import UniformContinuityTopos.Vector
+open import UniformContinuityTopos.UniformContinuityMonoid pt fe
+open import UniformContinuityTopos.UniformContinuityCoverage pt fe
 open import UniformContinuityTopos.MonoidAction fe
 open import UniformContinuityTopos.Sheaf pt fe
 open import UF.Subsingletons-FunExt
@@ -36,36 +37,16 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-module DefnOfΩ where
+ℳ : hSet 𝓤₀
+ℳ = ⟪ ℂ ⟫ , monoid-carrier-is-set ℂ
 
- ℳ : hSet (𝓤 ⁺)
- ℳ = ⟪ M ⟫ , monoid-carrier-is-set M
+is-set₀ : 𝓤  ̇ → Ω 𝓤
+is-set₀ X = is-set X , being-set-is-prop fe
 
- is-set₀ : 𝓤  ̇ → Ω 𝓤
- is-set₀ X = is-set X , being-set-is-prop fe
-
- Fam₀ : (𝓦 : Universe) → hSet 𝓥 → 𝓥 ⊔ 𝓦 ⁺  ̇
- Fam₀ 𝓦 (A , _) = Σ I ꞉ hSet 𝓦 , (pr₁ I → A)
-
- is-right-ideal : Fam₀ 𝓤 ℳ → Ω (𝓤 ⁺)
- is-right-ideal ((I , _) , f) =
-  Ɐ i ∶ I , Ɐ u ∶ ⟪ M ⟫ , Ǝ̃ j ∶ I , f j ＝ₛ u *[ M ] f i
-   where
-    open EqualityCombinator ⟪ M ⟫ (monoid-carrier-is-set M)
-
- RightIdeal : 𝓤 ⁺  ̇
- RightIdeal = Σ S ꞉ Fam₀ 𝓤 ℳ , is-right-ideal S holds
-
- -- RightIdeal₀ : hSet (𝓤 ⁺)
- -- RightIdeal₀ = RightIdeal , †
- --  where
- --   † : is-set RightIdeal
- --   † = Σ-is-set {!!} {!!}
-
- -- _·_ : RightIdeal → ⟪ M ⟫ → RightIdeal
- -- S · u = {!!}
+Fam₀ : (𝓦 : Universe) → hSet 𝓥 → 𝓥 ⊔ 𝓦 ⁺  ̇
+Fam₀ 𝓦 (A , _) = Σ I ꞉ hSet 𝓦 , (pr₁ I → A)
 
  -- TODO: to be implemented.
- postulate Ωₛ : Sheaf 𝓤₁
+postulate Ωₛ : Sheaf 𝓤₁
 
 \end{code}
