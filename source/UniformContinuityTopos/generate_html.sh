@@ -12,9 +12,7 @@ for file in `ls *.lagda`; do
 	mv $file ".$file"
 done
 
-agda --html --html-highlight=auto --css="Agda.css" UniformContinuityMonoid.lagda.md
-agda --html --html-highlight=auto --css="Agda.css" Sheaf.lagda.md
-agda --html --html-highlight=auto --css="Agda.css" Product.lagda.md
+agda --html --html-highlight=auto --css="Agda.css" index.lagda.md
 
 echo "Copying Agda.css into `html`..."
 
