@@ -14,57 +14,49 @@ open monoid
 module UniformContinuityTopos.InternalLanguage
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
-        (M   : Monoid {𝓤})
         where
 
 open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
 open AllCombinators pt fe
 
-open import UniformContinuityTopos.Coverage pt fe M
-open import UniformContinuityTopos.SubobjectClassifier pt fe M
-open import UniformContinuityTopos.Product pt fe M
+open import UniformContinuityTopos.SubobjectClassifier pt fe
+open import UniformContinuityTopos.Product pt fe
 
 \end{code}
 
 \begin{code}
 
-open import UniformContinuityTopos.Sheaf pt fe M
+open import UniformContinuityTopos.Sheaf pt fe
 
-module DefnOfInternalLanguage (𝒸ℴ𝓋 : Coverage 𝓦) where
+𝒯𝓎𝓅ℯ : (𝓤 : Universe) → 𝓤 ⁺  ̇
+𝒯𝓎𝓅ℯ 𝓤 = Sheaf 𝓤
 
- open DefnOfSheaf 𝒸ℴ𝓋
- open DefnOfProduct 𝒸ℴ𝓋
- open DefnOfΩ 𝒸ℴ𝓋
+private
+ variable
+  X Y : 𝒯𝓎𝓅ℯ 𝓤
 
- 𝒯𝓎𝓅ℯ : 𝓤 ⁺ ⊔ 𝓦  ̇
- 𝒯𝓎𝓅ℯ = Sheaf
+data 𝒞𝓉𝓍 : (𝓤 : Universe) → 𝓤ω where
+ ∅    : 𝒞𝓉𝓍 𝓤₀
+ _⌢_  : {𝓤 𝓥 : Universe} → 𝒞𝓉𝓍 𝓤 → 𝒯𝓎𝓅ℯ 𝓥 → 𝒞𝓉𝓍 (𝓤 ⊔ 𝓥)
 
- private
-  variable
-   X Y : 𝒯𝓎𝓅ℯ
+infix  4 _∋_
+infixl 5 _⌢_
 
- data 𝒞𝓉𝓍 : 𝓤 ⁺ ⊔ 𝓦  ̇ where
-  ∅    : 𝒞𝓉𝓍
-  _⌢_  : 𝒞𝓉𝓍 → 𝒯𝓎𝓅ℯ → 𝒞𝓉𝓍
+private
+ variable
+  Γ Δ : 𝒞𝓉𝓍 𝓤
 
- infix  4 _∋_
- infixl 5 _⌢_
+data _∋_ : 𝒞𝓉𝓍 𝓤 → 𝒯𝓎𝓅ℯ 𝓥 → 𝓤ω where
+ here  : {𝓤 : Universe} {Γ : 𝒞𝓉𝓍 𝓤} → Γ ⌢ X ∋ X
+ there : Γ ∋ X → Γ ⌢ Y ∋ X
 
- private
-  variable
-   Γ Δ : 𝒞𝓉𝓍
+data _⊢_ : 𝒞𝓉𝓍 𝓤 → 𝒯𝓎𝓅ℯ 𝓤 → 𝓤ω where
+ var  : Γ ∋ X → Γ ⊢ X
+ _,ᵢ_ : Γ ⊢ X → Γ ⊢ Y → Γ ⊢ (X ×ₛ Y)
+ _∘ᵢ_ : ℋℴ𝓂 X Y → Γ ⊢ X → Γ ⊢ Y
 
- data _∋_ : 𝒞𝓉𝓍 → 𝒯𝓎𝓅ℯ → 𝓤  ̇ where
-  here  : Γ ⌢ X ∋ X
-  there : Γ ∋ X → Γ ⌢ Y ∋ X
-
- data _⊢_ : 𝒞𝓉𝓍 → 𝒯𝓎𝓅ℯ → (𝓤 ⁺) ⊔ 𝓦  ̇ where
-  var  : Γ ∋ X → Γ ⊢ X
-  _,ᵢ_ : Γ ⊢ X → Γ ⊢ Y → Γ ⊢ (X ×ₛ Y)
-  _∘ᵢ_ : ℋℴ𝓂 X Y → Γ ⊢ X → Γ ⊢ Y
-  _≡ᵢ_ : Γ ⊢ X → Γ ⊢ X → Γ ⊢ Ωₛ
-
+{--
  mutual
 
   ⟦_⟧ₜ : 𝒞𝓉𝓍 → Sheaf
@@ -83,6 +75,6 @@ module DefnOfInternalLanguage (𝒸ℴ𝓋 : Coverage 𝓦) where
   ⟦_⟧ {Γ}     (var i)            = ⟦ i ⟧ₓ
   ⟦_⟧ {Γ}     (t₁ ,ᵢ t₂)         = pair ⟦ Γ ⟧ₜ (𝓉𝓎𝓅ℯ-ℴ𝒻 t₁) (𝓉𝓎𝓅ℯ-ℴ𝒻 t₂) ⟦ t₁ ⟧ ⟦ t₂ ⟧
   ⟦_⟧ {Γ} {X} (_∘ᵢ_ {Z} {X} f t) = comp ⟦ Γ ⟧ₜ Z X f ⟦ t ⟧
-  ⟦_⟧ {Γ} {X} (t₁ ≡ᵢ t₂)         = {!!}
+--}
 
 \end{code}
