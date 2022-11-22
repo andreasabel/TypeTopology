@@ -1,3 +1,9 @@
+---
+title: Uniform Continuity Monoid
+author: Ayberk Tosun
+date: 5 November 2022
+---
+
 Ayberk Tosun, 5 November 2022
 
 Based on Chuangjie Xu's formalisation.
