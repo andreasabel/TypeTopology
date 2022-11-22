@@ -18,6 +18,7 @@ module UniformContinuityTopos.UCSheaf
 
 open import UF.Subsingletons
 open import UF.Subsingleton-Combinators
+open import MLTT.Two-Properties
 
 open AllCombinators pt fe
 
@@ -25,10 +26,11 @@ open import UniformContinuityTopos.UniformContinuityMonoid pt fe
 open import UniformContinuityTopos.UniformContinuityCoverage pt fe
 open import UniformContinuityTopos.Vector
 open import UniformContinuityTopos.MonoidAction fe
-open import UniformContinuityTopos.Coverage pt fe ℂ
-open import UniformContinuityTopos.Sheaf pt fe ℂ
+open import UniformContinuityTopos.Sheaf pt fe
+open import Naturals.Order using (max)
 
 open PropositionalTruncation pt
+open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
 
 \end{code}
 
@@ -36,24 +38,55 @@ open PropositionalTruncation pt
 
 \begin{code}
 
-open DefnOfSheaf UC-coverage renaming (Sheaf to UC-Sheaf)
-open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
-
 thread : (𝟚 → ⟪ ℂ ⟫) → Cantor → Cantor
 thread 𝓉 α = ⦅ 𝓉 (head α) ⦆ α
+
+\end{code}
+
+\begin{code}
+
+_＝₂_ : 𝟚 → 𝟚 → Ω 𝓤₀
+₀ ＝₂ ₀ = ⊤Ω
+₁ ＝₂ ₁ = ⊥Ω
+₀ ＝₂ ₁ = ⊥Ω
+₁ ＝₂ ₀ = ⊤Ω
 
 thread-uniformly-continuous : (𝓉 : 𝟚 → ⟪ ℂ ⟫)
                             → is-uniformly-continuous (thread 𝓉) holds
 thread-uniformly-continuous 𝓉 m =
- ∥∥-rec (holds-is-prop {!!}) γ (pr₂ (𝓉 ₀) m)
+ ∥∥-rec₂ {!!} γ (pr₂ (𝓉 ₀) m) (pr₂ (𝓉 ₁) m)
   where
-   γ : (Σ n ꞉ ℕ , (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₀ ⦆ β) holds)
+   γ : Σ n₀ ꞉ ℕ , (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n₀ ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₀ ⦆ β) holds
+     → Σ n₁ ꞉ ℕ , (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n₁ ⟧ β ⇒ ⦅ 𝓉 ₁ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₁ ⦆ β) holds
      → (Ǝ̃ n ∶ ℕ , Ɐ α ∶ Cantor , Ɐ β ∶ Cantor ,
          α ＝⟦ n ⟧ β ⇒ thread 𝓉 α ＝⟦ m ⟧ thread 𝓉 β) holds
-   γ (n , ϕ) = ∣ n , † ∣
+   γ (n₀ , ϕ₀) (n₁ , ϕ₁) = ∣ n , † ∣
     where
-     † : (β₁ β₂ : Cantor) → (β₁ ＝⟦ n ⟧ β₂ ⇒ thread 𝓉 β₁ ＝⟦ m ⟧ thread 𝓉 β₂) holds
-     † β₁ β₂ p = {!!}
+     n = succ (max n₀ n₁)
+
+     † : (α β : Cantor) → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 (head α) ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
+     † α β p = ※ (head α) (head β) refl refl
+      where
+       ※ : (x y : 𝟚) → x ＝ head α → y ＝ head β → (⦅ 𝓉 x ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 y ⦆ β) holds
+       ※ ₀ ₀ _ _ = ϕ₀ α β (pr₁ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
+       ※ ₀ ₁ q r = 𝟘-elim (zero-is-not-one {!!})
+       ※ ₁ ₀ q r = 𝟘-elim {!!}
+       ※ ₁ ₁ _ _ = ϕ₁ α β (pr₂ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
+      --  A = λ - → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 - ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
+
+      --  †₀ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
+      --  †₀ = 𝟚-induction {A = B} ‡₀ ‡₁ (head β)
+      --   where
+      --    B = λ - → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 - ⦆ β) holds
+
+      --    ‡₀ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₀ ⦆ β) holds
+      --    ‡₀ p = ϕ₀ α β (pr₁ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
+
+      --    ‡₁ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₁ ⦆ β) holds
+      --    ‡₁ p = {!!}
+
+      --  †₁ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₁ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
+      --  †₁ = {!!}
 
 self-action-is-sheaf : is-sheaf (self-action ℂ) holds
 self-action-is-sheaf = †
@@ -91,7 +124,7 @@ self-action-is-sheaf = †
     𝓅 : ⟪ ℂ ⟫
     𝓅 = {!!} ⊚ {!𝔱𝔞𝔨𝔢!}
 
-self : UC-Sheaf
-self = self-action ℂ , {!!}
+self : Sheaf 𝓤₀
+self = self-action ℂ , self-action-is-sheaf
 
 \end{code}
