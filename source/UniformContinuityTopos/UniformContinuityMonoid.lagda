@@ -32,6 +32,7 @@ open import UF.Subsingletons-FunExt
 open import UF.Subsingleton-Combinators
 open import UF.SIP-Examples
 open import UniformContinuityTopos.Vector
+open import Naturals.Order using (max)
 
 open PropositionalTruncation pt
 
@@ -247,5 +248,41 @@ drop-is-uniformly-continuous (succ n) =
 
 𝔡𝔯𝔬𝔭 : ℕ → UC-Endomap
 𝔡𝔯𝔬𝔭 n = drop n , drop-is-uniformly-continuous n
+
+\end{code}
+
+\begin{code}
+
+＝-max-lemma : (α β : Cantor) (m n : ℕ)
+             → (α ＝⟦ max m n ⟧ β ⇒ α ＝⟦ m ⟧ β ∧ α ＝⟦ n ⟧ β) holds
+＝-max-lemma α β zero zero p = ⋆ , ⋆
+＝-max-lemma α β zero (succ n) p = ⋆ , p
+＝-max-lemma α β (succ m) zero p = p , ⋆
+＝-max-lemma α β (succ m) (succ n) (p₁ , p₂) = (p₁ , ℐℋ₁) , (p₁ , ℐℋ₂)
+ where
+  ℐℋ₁ = pr₁ (＝-max-lemma (tail α) (tail β) m n p₂)
+  ℐℋ₂ = pr₂ (＝-max-lemma (tail α) (tail β) m n p₂)
+
+＝-pred-lemma : {n : ℕ} (α β : Cantor) → (α ＝⟦ succ n ⟧ β ⇒ α ＝⟦ n ⟧ β) holds
+＝-pred-lemma {zero}   α β p       = ⋆
+＝-pred-lemma {succ n} α β (p , q) = p , ＝-pred-lemma (tail α) (tail β) q
+
+moduli-max-lemma : {t₁ t₂ : Cantor → Cantor} (m n₁ n₂ : ℕ)
+                 → ((α β : Cantor) → (α ＝⟦ n₁ ⟧ β ⇒ t₁ α ＝⟦ m ⟧ t₁ β) holds)
+                 → ((α β : Cantor) → (α ＝⟦ n₂ ⟧ β ⇒ t₂ α ＝⟦ m ⟧ t₂ β) holds)
+                 → (α β : Cantor)
+                 → (α ＝⟦ max n₁ n₂ ⟧ β ⇒ t₁ α ＝⟦ m ⟧ t₁ β ∧ t₂ α ＝⟦ m ⟧ t₂ β) holds
+moduli-max-lemma {t₁} {t₂} m n₁ n₂ ζ₁ ζ₂ α β p = ϕ₁ , ϕ₂
+ where
+  ϕ₁ : (t₁ α ＝⟦ m ⟧ t₁ β) holds
+  ϕ₁ = ζ₁ α β (pr₁ (＝-max-lemma α β n₁ n₂ p))
+
+  ϕ₂ : (t₂ α ＝⟦ m ⟧ t₂ β) holds
+  ϕ₂ = ζ₂ α β (pr₂ (＝-max-lemma α β n₁ n₂ p))
+
+≠-head-tail : (α β : Cantor) (n : ℕ)
+            → (α ＝⟦ n ⟧ β) holds → ¬ (head α ＝ head β) → n ＝ 0
+≠-head-tail α β zero     p        q = refl
+≠-head-tail α β (succ n) (p₁ , _) q = 𝟘-elim (q p₁)
 
 \end{code}
