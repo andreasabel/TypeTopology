@@ -46,7 +46,7 @@ is-set₀ X = is-set X , being-set-is-prop fe
 Fam₀ : (𝓦 : Universe) → hSet 𝓥 → 𝓥 ⊔ 𝓦 ⁺  ̇
 Fam₀ 𝓦 (A , _) = Σ I ꞉ hSet 𝓦 , (pr₁ I → A)
 
- -- TODO: to be implemented.
+-- TODO: to be implemented.
 postulate Ωₛ : Sheaf 𝓤₁
 
 \end{code}
