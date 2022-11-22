@@ -22,8 +22,6 @@ open import UniformContinuityTopos.UniformContinuityMonoid pt fe
 open import UniformContinuityTopos.MonoidAction fe
 open import UniformContinuityTopos.Vector
 
-open import UniformContinuityTopos.Coverage pt fe ℂ
-
 open PropositionalTruncation pt
 
 \end{code}
@@ -65,8 +63,8 @@ cons-uniformly-continuous (b ∷ b⃗) =
 𝔠𝔬𝔫𝔰 : Vec 𝟚 n → UC-Endomap
 𝔠𝔬𝔫𝔰 b⃗ = cons b⃗ , cons-uniformly-continuous b⃗
 
-𝒥 : Fam 𝓤₀ (Fam 𝓤₀ ⟪ ℂ ⟫)
-𝒥 = ℕ , (λ n → Vec 𝟚 n , 𝔠𝔬𝔫𝔰)
+𝒥 : (n : ℕ) → Vec 𝟚 n → UC-Endomap
+𝒥 n = 𝔠𝔬𝔫𝔰
 
 open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
 
@@ -121,7 +119,22 @@ take-drop-lemma (succ n) α =
    †  = ap (cons-bit (α 0)) ℐℋ
    ‡  = cons-bit-tail-lemma α
 
-𝒥-is-coverage : is-coverage 𝒥 holds
+\end{code}
+
+\begin{code}
+
+coverage-axiom-for-𝒥 : Ω 𝓤₀
+coverage-axiom-for-𝒥 = Ɐ t ∶ ⟪ ℂ ⟫ , Ɐ m ∶ ℕ ,
+                        Ǝ̃ n ∶ ℕ ,
+                         Ɐ s ∶ Vec 𝟚 n ,
+                          Ǝ̃ t′ ∶ ⟪ ℂ ⟫ , Ǝ̃ s′ ∶ Vec 𝟚 m ,
+                           t ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ t′
+
+\end{code}
+
+\begin{code}
+
+𝒥-is-coverage : coverage-axiom-for-𝒥 holds
 𝒥-is-coverage = †
  where
   Ψ : Ω 𝓤₀
@@ -164,8 +177,5 @@ take-drop-lemma (succ n) α =
 
         ※ : (𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝔠𝔬𝔫𝔰 s′ ⊚ (𝔡𝔯𝔬𝔭 m ⊚ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s)) holds
         ※ = UC-Endomap-extensional-equality ॐ
-
-UC-coverage : Coverage 𝓤₀
-UC-coverage = 𝒥 , 𝒥-is-coverage
 
 \end{code}
