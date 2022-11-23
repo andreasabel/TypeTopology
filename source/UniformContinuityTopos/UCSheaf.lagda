@@ -28,6 +28,7 @@ open import UniformContinuityTopos.Vector
 open import UniformContinuityTopos.MonoidAction fe
 open import UniformContinuityTopos.Sheaf pt fe
 open import Naturals.Order using (max)
+open import Naturals.Properties
 
 open PropositionalTruncation pt
 open EqualityCombinator ⟪ ℂ ⟫ (monoid-carrier-is-set ℂ)
@@ -54,8 +55,9 @@ _＝₂_ : 𝟚 → 𝟚 → Ω 𝓤₀
 thread-uniformly-continuous : (𝓉 : 𝟚 → ⟪ ℂ ⟫)
                             → is-uniformly-continuous (thread 𝓉) holds
 thread-uniformly-continuous 𝓉 m =
- ∥∥-rec₂ {!!} γ (pr₂ (𝓉 ₀) m) (pr₂ (𝓉 ₁) m)
+ ∥∥-rec₂ (holds-is-prop Ψ) γ (pr₂ (𝓉 ₀) m) (pr₂ (𝓉 ₁) m)
   where
+   Ψ = Ǝ̃ n ∶ ℕ , Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n ⟧ β ⇒ thread 𝓉 α ＝⟦ m ⟧ thread 𝓉 β
    γ : Σ n₀ ꞉ ℕ , (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n₀ ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₀ ⦆ β) holds
      → Σ n₁ ꞉ ℕ , (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n₁ ⟧ β ⇒ ⦅ 𝓉 ₁ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₁ ⦆ β) holds
      → (Ǝ̃ n ∶ ℕ , Ɐ α ∶ Cantor , Ɐ β ∶ Cantor ,
@@ -65,66 +67,44 @@ thread-uniformly-continuous 𝓉 m =
      n = succ (max n₀ n₁)
 
      † : (α β : Cantor) → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 (head α) ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
-     † α β p = ※ (head α) (head β) refl refl
+     † α β p = ♠ (head α) (head β) refl refl
       where
-       ※ : (x y : 𝟚) → x ＝ head α → y ＝ head β → (⦅ 𝓉 x ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 y ⦆ β) holds
-       ※ ₀ ₀ _ _ = ϕ₀ α β (pr₁ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
-       ※ ₀ ₁ q r = 𝟘-elim (zero-is-not-one {!!})
-       ※ ₁ ₀ q r = 𝟘-elim {!!}
-       ※ ₁ ₁ _ _ = ϕ₁ α β (pr₂ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
-      --  A = λ - → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 - ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
+       ♠ : (x y : 𝟚) → x ＝ head α → y ＝ head β → (⦅ 𝓉 x ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 y ⦆ β) holds
+       ♠ ₀ ₀ _ _ = ϕ₀ α β (pr₁ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
+       ♠ ₀ ₁ q r = 𝟘-elim (positive-not-zero (max n₀ n₁) (≠-head-tail α β n p ϟ))
+                    where
+                     ϟ : ¬ (head α ＝ head β)
+                     ϟ eq = zero-is-not-one (₀       ＝⟨ q    ⟩
+                                             head α  ＝⟨ eq   ⟩
+                                             head β  ＝⟨ r ⁻¹ ⟩
+                                             ₁       ∎)
+       ♠ ₁ ₀ q r = 𝟘-elim (positive-not-zero (max n₀ n₁) (≠-head-tail α β n p ϟ))
+                    where
+                     ϟ : ¬ (head α ＝ head β)
+                     ϟ eq = one-is-not-zero (₁      ＝⟨ q    ⟩
+                                             head α ＝⟨ eq   ⟩
+                                             head β ＝⟨ r ⁻¹ ⟩
+                                             ₀      ∎)
+       ♠ ₁ ₁ _ _ = ϕ₁ α β (pr₂ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
 
-      --  †₀ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
-      --  †₀ = 𝟚-induction {A = B} ‡₀ ‡₁ (head β)
-      --   where
-      --    B = λ - → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 - ⦆ β) holds
+𝔱𝔥𝔯𝔢𝔞𝔡 : (𝟚 → ⟪ ℂ ⟫) → UC-Endomap
+𝔱𝔥𝔯𝔢𝔞𝔡 𝓉 = thread 𝓉 , thread-uniformly-continuous 𝓉
 
-      --    ‡₀ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₀ ⦆ β) holds
-      --    ‡₀ p = ϕ₀ α β (pr₁ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
-
-      --    ‡₁ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₁ ⦆ β) holds
-      --    ‡₁ p = {!!}
-
-      --  †₁ : (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 ₁ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
-      --  †₁ = {!!}
+𝔱𝔥𝔯𝔢𝔞𝔡⋆ : {k : ℕ} → (Vec 𝟚 k → ⟪ ℂ ⟫) → UC-Endomap
+𝔱𝔥𝔯𝔢𝔞𝔡⋆ {zero}   𝓉 = 𝓉 []
+𝔱𝔥𝔯𝔢𝔞𝔡⋆ {succ n} 𝓉 = 𝔱𝔥𝔯𝔢𝔞𝔡⋆ (λ s → 𝔱𝔥𝔯𝔢𝔞𝔡 (λ b → 𝓉 (b ∷ s)))
 
 self-action-is-sheaf : is-sheaf (self-action ℂ) holds
 self-action-is-sheaf = †
  where
   † : (k : ℕ) (𝓉 : Vec 𝟚 k → ⟪ ℂ ⟫)
     → (!∃ p ∶ ⟪ ℂ ⟫ , Ɐ s ∶ Vec 𝟚 k , p ⊚ 𝔠𝔬𝔫𝔰 s ＝ₛ 𝓉 s) holds
-  † k 𝓉 = (𝓅 , {!!}) , {!!}
+  † k 𝓉 = (𝔱𝔥𝔯𝔢𝔞𝔡⋆ 𝓉 , ♠) , {!!}
    where
-    p : Cantor → Cantor
-    p α = ⦅ 𝓉 (take k α) ⦆ α
-     where
-      q : Cantor → Cantor
-      q = ⦅ 𝓉 (take k α) ⦆
-
-    κ : (s : Vec 𝟚 k) → is-uniformly-continuous ⦅ 𝓉 s ⦆ holds
-    κ s = pr₂ (𝓉 s)
-
-    ζ : is-uniformly-continuous p holds
-    ζ m = ∣ k , ‡ ∣
-     where
-      ‡ : (α β : Cantor) → (α ＝⟦ k ⟧ β) holds → (p α ＝⟦ m ⟧ p β) holds
-      ‡ α β ϕ = ∥∥-rec (holds-is-prop (p α ＝⟦ m ⟧ p β)) ♠ (κ (take k α) m)
-       where
-        ♠ : (Σ n ꞉ ℕ , ((β₀ β₁ : Cantor) → (β₀ ＝⟦ n ⟧ β₁ ⇒ ⦅ 𝓉 (take k α) ⦆ β₀ ＝⟦ m ⟧ ⦅ 𝓉 (take k α) ⦆ β₁) holds))
-          → (⦅ 𝓉 (take k α) ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (take k β) ⦆ β) holds
-        ♠ (n , ψ) = ※
-         where
-          ※ : (⦅ 𝓉 (take k α) ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (take k β) ⦆ β) holds
-          ※ = transport
-               (λ - → (⦅ 𝓉 (take k α) ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 - ⦆ β) holds)
-               (take-＝-lemma k α β ϕ)
-               (ψ α β {!!})
-
-
-    𝓅 : ⟪ ℂ ⟫
-    𝓅 = {!!} ⊚ {!𝔱𝔞𝔨𝔢!}
+    ♠ : (s : Vec 𝟚 k) → 𝔱𝔥𝔯𝔢𝔞𝔡⋆ 𝓉 ⊚ 𝔠𝔬𝔫𝔰 s ＝ 𝓉 s
+    ♠ s = {!!}
 
 self : Sheaf 𝓤₀
-self = self-action ℂ , self-action-is-sheaf
+self = {!!} -- self-action ℂ , self-action-is-sheaf
 
 \end{code}
