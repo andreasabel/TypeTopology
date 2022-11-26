@@ -267,6 +267,10 @@ drop-is-uniformly-continuous (succ n) =
 ＝-pred-lemma {zero}   α β p       = ⋆
 ＝-pred-lemma {succ n} α β (p , q) = p , ＝-pred-lemma (tail α) (tail β) q
 
+＝-pred-lemma′ : (n : ℕ) (α β : Cantor) → (α ＝⟦ succ n ⟧ β ⇒ tail α ＝⟦ n ⟧ tail β) holds
+＝-pred-lemma′ zero   α β p = ⋆
+＝-pred-lemma′ (succ n) α β (p , q , r) = q , (＝-pred-lemma′ n (tail α) (tail β) (q , r))
+
 moduli-max-lemma : {t₁ t₂ : Cantor → Cantor} (m n₁ n₂ : ℕ)
                  → ((α β : Cantor) → (α ＝⟦ n₁ ⟧ β ⇒ t₁ α ＝⟦ m ⟧ t₁ β) holds)
                  → ((α β : Cantor) → (α ＝⟦ n₂ ⟧ β ⇒ t₂ α ＝⟦ m ⟧ t₂ β) holds)

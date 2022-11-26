@@ -49,6 +49,9 @@ cons-bit-is-uniformly-continuous b (succ m) = ∣ m    , φ             ∣
     → (α ＝⟦ m ⟧ β ⇒ cons-bit b α ＝⟦ succ m ⟧ cons-bit b β) holds
   φ α β p = refl , p
 
+𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 : 𝟚 → UC-Endomap
+𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 b = cons-bit b , cons-bit-is-uniformly-continuous b
+
 cons-uniformly-continuous : (b⃗ : Vec 𝟚 n) → is-uniformly-continuous (cons b⃗) holds
 cons-uniformly-continuous []      = id-is-uniformly-continuous
 cons-uniformly-continuous (b ∷ b⃗) =
@@ -62,6 +65,9 @@ cons-uniformly-continuous (b ∷ b⃗) =
 
 𝔠𝔬𝔫𝔰 : Vec 𝟚 n → UC-Endomap
 𝔠𝔬𝔫𝔰 b⃗ = cons b⃗ , cons-uniformly-continuous b⃗
+
+𝔠𝔬𝔫𝔰-𝔟𝔦𝔱-is-singleton-𝔠𝔬𝔫𝔰 : (b : 𝟚) → 𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 b ＝ 𝔠𝔬𝔫𝔰 (b ∷ [])
+𝔠𝔬𝔫𝔰-𝔟𝔦𝔱-is-singleton-𝔠𝔬𝔫𝔰 b = UC-Endomap-extensional-equality λ _ → refl
 
 𝒥 : (n : ℕ) → Vec 𝟚 n → UC-Endomap
 𝒥 n = 𝔠𝔬𝔫𝔰

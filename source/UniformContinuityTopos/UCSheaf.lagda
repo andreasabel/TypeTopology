@@ -62,32 +62,34 @@ thread-uniformly-continuous 𝓉 m =
                     α ＝⟦ n₁ ⟧ β ⇒ ⦅ 𝓉 ₁ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₁ ⦆ β) holds
      → (Ǝ̃ n ∶ ℕ , Ɐ α ∶ Cantor , Ɐ β ∶ Cantor ,
          α ＝⟦ n ⟧ β ⇒ thread 𝓉 α ＝⟦ m ⟧ thread 𝓉 β) holds
-   γ (n₀ , ϕ₀) (n₁ , ϕ₁) = {!!}
+   γ (n₀ , ϕ₀) (n₁ , ϕ₁) = ∣ n , † ∣
+    where
+     n = succ (max n₀ n₁)
 
- --   γ (n₀ , ϕ₀) (n₁ , ϕ₁) = ∣ n , † ∣
- --    where
- --     n = succ (max n₀ n₁)
+     † : (α β : Cantor) → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 (head α) ⦆ (tail α) ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ (tail β)) holds
+     † α β p = ♠ (head α) (head β) refl refl
+      where
+       ♣ : (tail α ＝⟦ max n₀ n₁ ⟧ tail β) holds
+       ♣ = ＝-pred-lemma′ (max n₀ n₁) α β p
 
- --     † : (α β : Cantor) → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 (head α) ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ β) holds
- --     † α β p = ♠ (head α) (head β) refl refl
- --      where
- --       ♠ : (x y : 𝟚) → x ＝ head α → y ＝ head β → (⦅ 𝓉 x ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 y ⦆ β) holds
- --       ♠ ₀ ₀ _ _ = ϕ₀ α β (pr₁ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
- --       ♠ ₀ ₁ q r = 𝟘-elim (positive-not-zero (max n₀ n₁) (≠-head-tail α β n p ϟ))
- --                    where
- --                     ϟ : ¬ (head α ＝ head β)
- --                     ϟ eq = zero-is-not-one (₀       ＝⟨ q    ⟩
- --                                             head α  ＝⟨ eq   ⟩
- --                                             head β  ＝⟨ r ⁻¹ ⟩
- --                                             ₁       ∎)
- --       ♠ ₁ ₀ q r = 𝟘-elim (positive-not-zero (max n₀ n₁) (≠-head-tail α β n p ϟ))
- --                    where
- --                     ϟ : ¬ (head α ＝ head β)
- --                     ϟ eq = one-is-not-zero (₁      ＝⟨ q    ⟩
- --                                             head α ＝⟨ eq   ⟩
- --                                             head β ＝⟨ r ⁻¹ ⟩
- --                                             ₀      ∎)
- --       ♠ ₁ ₁ _ _ = ϕ₁ α β (pr₂ (＝-max-lemma α β n₀ n₁ (＝-pred-lemma {n = max n₀ n₁} α β p)))
+
+       ♠ : (x y : 𝟚) → x ＝ head α → y ＝ head β → (⦅ 𝓉 x ⦆ (tail α) ＝⟦ m ⟧ ⦅ 𝓉 y ⦆ (tail β)) holds
+       ♠ ₀ ₀ _ _ = ϕ₀ (tail α) (tail β) (pr₁ (＝-max-lemma (tail α) (tail β) n₀ n₁ ♣))
+       ♠ ₀ ₁ q r = 𝟘-elim (positive-not-zero (max n₀ n₁) (≠-head-tail α β n p ϟ))
+                    where
+                     ϡ : head α ＝ head β → ₀ ＝ ₁
+                     ϡ eq = ₀ ＝⟨ q ⟩ head α ＝⟨ eq ⟩ head β ＝⟨ r ⁻¹ ⟩ ₁ ∎
+
+                     ϟ : ¬ (head α ＝ head β)
+                     ϟ = zero-is-not-one ∘ ϡ
+       ♠ ₁ ₀ q r = 𝟘-elim (positive-not-zero (max n₀ n₁) (≠-head-tail α β n p ϟ))
+                    where
+                     ϡ : head α ＝ head β → ₀ ＝ ₁
+                     ϡ eq = ₀ ＝⟨ r ⟩ head β ＝⟨ eq ⁻¹ ⟩ head α ＝⟨ q ⁻¹ ⟩ ₁ ∎
+
+                     ϟ : ¬ (head α ＝ head β)
+                     ϟ = zero-is-not-one ∘ ϡ
+       ♠ ₁ ₁ _ _ = ϕ₁ (tail α) (tail β) (pr₂ (＝-max-lemma (tail α) (tail β) n₀ n₁ ♣))
 
 \end{code}
 
