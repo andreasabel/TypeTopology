@@ -23,3 +23,16 @@ data Vec (A : 𝓤  ̇) : ℕ → 𝓤  ̇ where
 ∷-eq-lemma₂ refl = refl
 
 \end{code}
+
+\begin{code}
+
+headv : {A : 𝓤  ̇} {n : ℕ} → Vec A (succ n) → A
+headv (x ∷ _) = x
+
+tailv : {A : 𝓤  ̇} {n : ℕ} → Vec A (succ n) → Vec A n
+tailv (_ ∷ xs) = xs
+
+headv-tailv-lemma : {A : 𝓤  ̇} {n : ℕ} → (s : Vec 𝟚 (succ n)) → s ＝ headv s ∷ tailv s
+headv-tailv-lemma (x ∷ s) = refl
+
+\end{code}
