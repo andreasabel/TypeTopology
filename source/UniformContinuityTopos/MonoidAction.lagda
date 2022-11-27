@@ -115,4 +115,7 @@ self-action M = (⟪ M ⟫ , monoid-carrier-is-set M) , _·_ , †
 is-right-ideal : (M : Monoid {𝓤}) → 𝓟 ⟪ M ⟫ → Ω 𝓤
 is-right-ideal M S = Ɐ x ∶ ⟪ M ⟫ , Ɐ u ∶ ⟪ M ⟫ , S x ⇒ S (x *[ M ] u)
 
+RightIdeal : (M : Monoid {𝓤}) → 𝓤 ⁺  ̇
+RightIdeal M = Σ S ꞉ 𝓟 ⟪ M ⟫ , is-right-ideal M S holds
+
 \end{code}
