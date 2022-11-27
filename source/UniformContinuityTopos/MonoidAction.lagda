@@ -20,9 +20,11 @@ open import UF.Subsingletons
 -- open import UF.Subsingletons-FunExt
 open import UF.Subsingleton-Combinators
 open import UF.SIP-Examples
+open import UF.Powerset
 
 open Universal fe
 open Conjunction
+open Implication fe
 
 open monoid
 
@@ -105,5 +107,12 @@ self-action M = (⟪ M ⟫ , monoid-carrier-is-set M) , _·_ , †
 
     γ : (u v w : ⟪ M ⟫) → u · (v · w) ＝ (u · v) · w
     γ u v w = *[ M ]-is-associative u v w ⁻¹
+
+\end{code}
+
+\begin{code}
+
+is-right-ideal : (M : Monoid {𝓤}) → 𝓟 ⟪ M ⟫ → Ω 𝓤
+is-right-ideal M S = Ɐ x ∶ ⟪ M ⟫ , Ɐ u ∶ ⟪ M ⟫ , S x ⇒ S (x *[ M ] u)
 
 \end{code}
