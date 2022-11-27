@@ -11,7 +11,7 @@ open import MLTT.Fin
 open import UF.SIP-Examples
 open monoid
 
-module UniformContinuityTopos.UCSheaf
+module UniformContinuityTopos.Yoneda
         (pt  : propositional-truncations-exist)
         (fe  : Fun-Ext)
         where
