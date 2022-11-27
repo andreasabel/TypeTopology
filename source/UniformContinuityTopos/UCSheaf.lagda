@@ -54,7 +54,8 @@ thread-uniformly-continuous : (𝓉 : 𝟚 → ⟪ ℂ ⟫)
 thread-uniformly-continuous 𝓉 m =
  ∥∥-rec₂ (holds-is-prop Ψ) γ (pr₂ (𝓉 ₀) m) (pr₂ (𝓉 ₁) m)
   where
-   Ψ = Ǝ̃ n ∶ ℕ , Ɐ α ∶ Cantor , Ɐ β ∶ Cantor , α ＝⟦ n ⟧ β ⇒ thread 𝓉 α ＝⟦ m ⟧ thread 𝓉 β
+   Ψ = Ǝ̃ n ∶ ℕ , Ɐ α ∶ Cantor , Ɐ β ∶ Cantor ,
+        α ＝⟦ n ⟧ β ⇒ thread 𝓉 α ＝⟦ m ⟧ thread 𝓉 β
 
    γ : Σ n₀ ꞉ ℕ , (Ɐ α ∶ Cantor , Ɐ β ∶ Cantor ,
                     α ＝⟦ n₀ ⟧ β ⇒ ⦅ 𝓉 ₀ ⦆ α ＝⟦ m ⟧ ⦅ 𝓉 ₀ ⦆ β) holds
@@ -66,14 +67,19 @@ thread-uniformly-continuous 𝓉 m =
     where
      n = succ (max n₀ n₁)
 
-     † : (α β : Cantor) → (α ＝⟦ n ⟧ β ⇒ ⦅ 𝓉 (head α) ⦆ (tail α) ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ (tail β)) holds
+     † : (α β : Cantor)
+       → (α ＝⟦ n ⟧ β
+       ⇒ ⦅ 𝓉 (head α) ⦆ (tail α) ＝⟦ m ⟧ ⦅ 𝓉 (head β) ⦆ (tail β)) holds
      † α β p = ♠ (head α) (head β) refl refl
       where
        ♣ : (tail α ＝⟦ max n₀ n₁ ⟧ tail β) holds
        ♣ = ＝-pred-lemma′ (max n₀ n₁) α β p
 
 
-       ♠ : (x y : 𝟚) → x ＝ head α → y ＝ head β → (⦅ 𝓉 x ⦆ (tail α) ＝⟦ m ⟧ ⦅ 𝓉 y ⦆ (tail β)) holds
+       ♠ : (x y : 𝟚)
+         → x ＝ head α
+         → y ＝ head β
+         → (⦅ 𝓉 x ⦆ (tail α) ＝⟦ m ⟧ ⦅ 𝓉 y ⦆ (tail β)) holds
        ♠ ₀ ₀ _ _ = ϕ₀ (tail α) (tail β) (pr₁ (＝-max-lemma (tail α) (tail β) n₀ n₁ ♣))
        ♠ ₀ ₁ q r = 𝟘-elim (positive-not-zero (max n₀ n₁) (≠-head-tail α β n p ϟ))
                     where
@@ -116,21 +122,21 @@ self-action-is-sheaf = sheaf′-implies-sheaf (self-action ℂ) ※
     c (t , †′) =
      to-subtype-＝ (λ _ → Π-is-prop fe λ _ → monoid-carrier-is-set ℂ) ♠
       where
-       γ : (b : 𝟚) (α : Cantor) → thread 𝓉 (⦅ 𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 b ⦆ α)  ＝ ⦅ 𝓉 b ⦆ α
-       γ b α = ap (λ - → - α) (pr₁ (from-Σ-＝ († b)))
-
-       γ′ : (b : 𝟚) (α : Cantor) → ⦅ t ⊚ 𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 b ⦆ α ＝ ⦅ 𝓉 b ⦆  α
-       γ′ b α = ap (λ - → - α) (pr₁ (from-Σ-＝ (†′ b)))
+       γ : (b : 𝟚) (α : Cantor) → ⦅ t ⊚ 𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 b ⦆ α ＝ ⦅ 𝓉 b ⦆  α
+       γ b α = ap (λ - → - α) (pr₁ (from-Σ-＝ (†′ b)))
 
        ♢ : (α : Cantor) (x : 𝟚) → x ＝ head α → ⦅ 𝓉 x ⦆ (tail α) ＝ ⦅ t ⦆ α
-       ♢ α b p = ⦅ 𝓉 b ⦆ (tail α)                    ＝⟨ ap (λ - → ⦅ 𝓉 - ⦆ (tail α)) p ⟩
-                 ⦅ 𝓉 (head α) ⦆ (tail α)             ＝⟨ γ′ (head α) (tail α) ⁻¹ ⟩
+       ♢ α b p = ⦅ 𝓉 b ⦆ (tail α)                    ＝⟨ Ⅰ    ⟩
+                 ⦅ 𝓉 (head α) ⦆ (tail α)             ＝⟨ Ⅱ    ⟩
                  ⦅ t ⊚ 𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 (head α) ⦆ (tail α)  ＝⟨ refl ⟩
-                 ⦅ t ⊚ 𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 (head α) ⦆ (tail α)  ＝⟨ ap ⦅ t ⦆ (cons-bit-tail-lemma α) ⟩
+                 ⦅ t ⊚ 𝔠𝔬𝔫𝔰-𝔟𝔦𝔱 (head α) ⦆ (tail α)  ＝⟨ Ⅲ    ⟩
                  ⦅ t ⦆ α                             ∎
+                  where
+                   Ⅰ = ap (λ - → ⦅ 𝓉 - ⦆ (tail α)) p
+                   Ⅱ = γ (head α) (tail α) ⁻¹
+                   Ⅲ = ap ⦅ t ⦆ (cons-bit-tail-lemma α)
 
        ♠ : 𝔱𝔥𝔯𝔢𝔞𝔡 𝓉 ＝ t
        ♠ = UC-Endomap-extensional-equality (λ α → ♢ α (head α) refl)
-
 
 \end{code}
