@@ -10,8 +10,11 @@ open import MLTT.Vector
 open import MLTT.Fin
 open import MLTT.Bool
 open import Naturals.Order
+open import Ordinals.Type
 
 module Ordinals.Hydra (fe : FunExt) where
+
+open import Ordinals.Arithmetic fe
 
 \end{code}
 
@@ -120,5 +123,16 @@ cut : (h : Hydra) → (l : HeadLocation h) → Hydra
 cut (_      , φ) (i , is) with φ i
 cut (succ n , φ) (i , ⋆)  | Head       = n , delete i φ
 cut (succ n , φ) (i , is) | Branch k ψ = succ n , replace-branch (cutₕ (Branch k ψ) is) φ i
+
+\end{code}
+
+\begin{code}
+
+fold : {n : ℕ} → (Fin n → Ord) → Ord → (Ord → Ord → Ord) → Ord
+fold {zero}   φ α f = α
+fold {succ n} φ α f = f (φ 𝟎) (fold {n} (tl φ) α f)
+
+ordinal-of : Hydra → Ordinal 𝓤₀
+ordinal-of (n , φ) = {!!}
 
 \end{code}
